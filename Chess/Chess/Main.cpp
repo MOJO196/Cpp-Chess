@@ -95,9 +95,10 @@ bool validateMove(int input[])
 		switch (gameState[input[0]][input[1]])
 		{
 		case pieces::WP:
-			moveValid = PawnMoves(input);
+			moveValid = pawnMoves(input);
 			break;
 		case pieces::WR:
+			moveValid = rookMoves(input);
 			break;
 		case pieces::WN:
 			break;
@@ -116,16 +117,17 @@ bool validateMove(int input[])
 		switch (gameState[input[0]][input[1]])
 		{
 		case pieces::BP:
-			moveValid = PawnMoves(input);
-			break;	 
+			moveValid = pawnMoves(input);
+			break;
 		case pieces::BR:
-			break;	 
+			moveValid = rookMoves(input);
+			break;
 		case pieces::BN:
-			break;	 
+			break;
 		case pieces::BB:
-			break;	 
+			break;
 		case pieces::BQ:
-			break;	 
+			break;
 		case pieces::BK:
 			break;
 		default:
@@ -140,7 +142,7 @@ bool validateMove(int input[])
 }
 
 //moves
-bool PawnMoves(int input[])
+bool pawnMoves(int input[])
 {
 	if (whiteToMove)
 	{
@@ -205,6 +207,23 @@ bool PawnMoves(int input[])
 			return true;
 		}
 		//casteling
+	}
+
+	return false;
+}
+
+bool rookMoves(int input[])
+{
+	//horizontal
+	if (input[0] == input[2] && input[1] != input[3])
+	{
+
+	}
+
+	//vertical
+	else if (input[0] == input[2] && input[1] != input[3])
+	{
+
 	}
 
 	return false;
