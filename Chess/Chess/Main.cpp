@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <list>
 #include "main.h"
 
 
@@ -18,6 +19,12 @@ int gameState[8][8] =
 	{pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK, pieces::WB, pieces::WN, pieces::WR}
 };
 
+struct position
+{
+	int xPos;
+	int yPos;
+};
+
 //move class stores moves
 //moves will be stored here to undo them
 int moveLog[][6];
@@ -26,6 +33,10 @@ bool whiteToMove = true;
 
 int main()
 {
+	std::list<position> moves;
+	
+	moves.assign(1, (1, 2));
+	/*
 	//define stuff
 	printGameState();
 
@@ -37,6 +48,7 @@ int main()
 		std::cout << "\x1B[2J\x1B[H";
 		printGameState();
 	}
+	*/
 }
 
 void printGameState()
@@ -214,16 +226,27 @@ bool pawnMoves(int input[])
 
 bool rookMoves(int input[])
 {
-	//horizontal
-	if (input[0] == input[2] && input[1] != input[3])
+	int directions[4][2] = {
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1}
+	};
+
+	int possibleMoves[][2] = { -1 };
+
+	memset(possibleMoves, -1, sizeof possibleMoves);
+
+	for (size_t i = 0; i < 4; i++)
 	{
+		for (size_t j = 0; j < 7; j++)
+		{
+			if (directions[i][0] * j + input[0] < 7 && directions[i][0] * j + input[0] > 0 &&
+				directions[i][1] * j + input[1] < 7 && directions[i][1] * j + input[1] > 0)
+			{
 
-	}
-
-	//vertical
-	else if (input[0] == input[2] && input[1] != input[3])
-	{
-
+			}
+		}
 	}
 
 	return false;
