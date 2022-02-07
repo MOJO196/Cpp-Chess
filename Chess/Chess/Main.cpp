@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <list>
+#include <array>
 #include "main.h"
 
 
@@ -33,9 +33,6 @@ bool whiteToMove = true;
 
 int main()
 {
-	std::list<position> moves;
-	
-	moves.assign(1, (1, 2));
 	/*
 	//define stuff
 	printGameState();
@@ -233,19 +230,57 @@ bool rookMoves(int input[])
 		{0, 1}
 	};
 
-	int possibleMoves[][2] = { -1 };
+	int r = 0;
 
-	memset(possibleMoves, -1, sizeof possibleMoves);
+	std::array<std::array<int, 2>, 4> possibleMoves;
+
+	/*
+	possibleMoves[0] = { 1, 2 };
+	possibleMoves[1] = { 1, 2 };
+	possibleMoves[2] = { 1, 2 };
+	possibleMoves[3] = { 1, 2 };
 
 	for (size_t i = 0; i < 4; i++)
 	{
-		for (size_t j = 0; j < 7; j++)
+		std::cout << possibleMoves[i][0] << " " << possibleMoves[i][1] << std::endl;
+	}
+	*/
+
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 7; j++)
 		{
 			if (directions[i][0] * j + input[0] < 7 && directions[i][0] * j + input[0] > 0 &&
 				directions[i][1] * j + input[1] < 7 && directions[i][1] * j + input[1] > 0)
 			{
-
+				//exeptions
+				if (gameState[directions[i][0] * j + input[0]][directions[i][1] * j + input[1]] == pieces::ES)
+				{
+					possibleMoves[r] = { directions[i][0] * j + input[0], directions[i][1] * j + input[1] };
+					r++;
+				}
+				for (size_t k = 1; k < 7; k++)
+				{
+					if (gameState[directions[i][0] * j + input[0]][directions[i][1] * j + input[1]] == k)
+					{
+						if (whiteToMove)
+						{
+							possibleMoves[r] = { directions[i][0] * j + input[0], directions[i][1] * j + input[1] };
+							r++;
+						}
+					}
+					else
+					{
+						if (!whiteToMove)
+						{
+							possibleMoves[r] = { directions[i][0] * j + input[0], directions[i][1] * j + input[1] };
+							r++;
+						}
+					}
+				}
 			}
+			break;
 		}
 	}
 
