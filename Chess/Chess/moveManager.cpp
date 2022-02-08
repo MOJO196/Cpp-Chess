@@ -182,7 +182,7 @@ std::vector<position> rookMoves(position startPos)
 
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 7; j++)
+		for (int j = 1; j < 7; j++)
 		{
 			if (directions[i][0] * j + startPos.row < 7 && directions[i][0] * j + startPos.row > 0 &&
 				directions[i][1] * j + startPos.col < 7 && directions[i][1] * j + startPos.col > 0)
@@ -214,5 +214,5 @@ std::vector<position> rookMoves(position startPos)
 		}
 	}
 
-	return {};
+	return possibleMoves;
 }
