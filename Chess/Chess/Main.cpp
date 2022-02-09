@@ -27,7 +27,6 @@ bool whiteToMove = true;
 
 int main()
 {
-	//define stuff
 	printGameState();
 
 	for (;;) //game

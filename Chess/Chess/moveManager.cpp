@@ -28,9 +28,30 @@ void getUserInput()
 
 		std::cout << "Invalid move!";
 	}
-
 	gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
 	gameState[input[0]][input[1]] = pieces::ES;
+
+	//pawn Promotion
+	if (gameState[input[0]][input[1]] == pieces::BP || gameState[input[0]][input[1]] == pieces::WP && (input[2] == 0 || input[2] == 7))
+	{
+		for (;;)
+		{
+			int pieceID = -1;
+			std::cout << "Enter the ID of a piece you want to promote!\n";
+			std::cin >> pieceID;
+
+			if (whiteToMove && pieceID == pieces::WN || pieceID == pieces::WB || pieceID == pieces::WR || pieceID == pieces::WQ)
+			{
+				gameState[input[2]][input[3]] = pieceID;
+				break;
+			}
+			else if (!whiteToMove && pieceID == pieces::BN || pieceID == pieces::BB || pieceID == pieces::BR || pieceID == pieces::BQ)
+			{
+				gameState[input[2]][input[3]] = pieceID;
+				break;
+			}
+		}
+	}
 }
 
 bool validateMove(int input[])
@@ -49,7 +70,7 @@ bool validateMove(int input[])
 		switch (gameState[input[0]][input[1]])
 		{
 		case pieces::WP:
-			moveValid = pawnMoves(input);
+			possibleMoves = pawnMoves(startPos);
 			break;
 		case pieces::WR:
 			possibleMoves = rookMoves(startPos);
@@ -71,7 +92,7 @@ bool validateMove(int input[])
 		switch (gameState[input[0]][input[1]])
 		{
 		case pieces::BP:
-			moveValid = pawnMoves(input);
+			possibleMoves = pawnMoves(startPos);
 			break;
 		case pieces::BR:
 			possibleMoves = rookMoves(startPos);
@@ -106,7 +127,6 @@ std::vector<position> pawnMoves(position startPos)
 {
 	int direction = 0;
 	int startRow = -1;
-	int promoRow = -1;
 
 	std::vector<position> possibleMoves{};
 	std::vector<int> enumPosition{};
@@ -116,7 +136,6 @@ std::vector<position> pawnMoves(position startPos)
 		if (gameState[startPos.row][startPos.col] == pieces::BP) return {};
 		direction = -1;
 		startRow = 6;
-		promoRow = 0;
 
 		enumPosition.insert(enumPosition.end(), { 1, 2, 3, 4, 5, 6 });
 	}
@@ -125,7 +144,6 @@ std::vector<position> pawnMoves(position startPos)
 		if (gameState[startPos.row][startPos.col] == pieces::WP) return {};
 		direction = 1;
 		startRow = 1;
-		promoRow = 7;
 
 		enumPosition.insert(enumPosition.end(), { 7, 8, 9, 10, 11, 12 });
 	}
@@ -133,7 +151,7 @@ std::vector<position> pawnMoves(position startPos)
 	//capture
 	for (int i = -1; i < 2; i += 2)
 	{
-		for (int j = 0;  j < 6; j++)
+		for (int j = 0; j < 6; j++)
 		{
 			if (gameState[startPos.row + direction][startPos.col + i] == enumPosition[j])
 			{
@@ -145,10 +163,13 @@ std::vector<position> pawnMoves(position startPos)
 	//move forwards
 	if (gameState[startPos.row + direction][startPos.col] == pieces::ES)
 	{
+		possibleMoves.push_back({ startPos.row + direction, startPos.col });
 
+		if (gameState[startPos.row + direction * 2][startPos.col] == pieces::ES && startPos.row == startRow)
+		{
+			possibleMoves.push_back({ startPos.row + direction * 2, startPos.col });
+		}
 	}
-
-	//promote
 }
 
 std::vector<position> rookMoves(position startPos)
