@@ -102,74 +102,53 @@ bool validateMove(int input[])
 }
 
 //moves
-bool pawnMoves(int input[])
+std::vector<position> pawnMoves(position startPos)
 {
+	int direction = 0;
+	int startRow = -1;
+	int promoRow = -1;
+
+	std::vector<position> possibleMoves{};
+	std::vector<int> enumPosition{};
+
 	if (whiteToMove)
 	{
-		if (gameState[input[0] - 1][input[1]] == pieces::ES && input[1] == input[3])
-		{
-			if (input[0] - 1 == input[2])
-			{
-				if (input[0] - 1 == 0)
-				{
-					//promote
-				}
+		if (gameState[startPos.row][startPos.col] == pieces::BP) return {};
+		direction = -1;
+		startRow = 6;
+		promoRow = 0;
 
-				return true;
-			}
-			else if (gameState[input[0] - 2][input[1]] == pieces::ES && input[0] - 2 == input[2] && input[0] == 6)
-			{
-				return true;
-			}
-			return false;
-		}
-		//capture
-		if (input[0] - 1 == input[2] && input[1] - 1 == input[3] || input[0] - 1 == input[2] && input[1] + 1 == input[3])
-		{
-			if (gameState[input[2]][input[3]] == 0) return false;
-
-			for (size_t i = 7; i < 13; i++)
-			{
-				if (gameState[input[2]][input[3]] == i) return false;
-			}
-
-			return true;
-		}
-		//casteling
+		enumPosition.insert(enumPosition.end(), { 1, 2, 3, 4, 5, 6 });
 	}
 	else
 	{
-		if (gameState[input[0] + 1][input[1]] == pieces::ES && input[1] == input[3])
-		{
-			if (input[0] + 1 == input[2])
-			{
-				if (input[0] - 1 == 7)
-				{
-					//promote
-				}
+		if (gameState[startPos.row][startPos.col] == pieces::WP) return {};
+		direction = 1;
+		startRow = 1;
+		promoRow = 7;
 
-				return true;
-			}
-			else if (gameState[input[0] + 2][input[1]] == pieces::ES && input[0] + 2 == input[2] && input[0] == 1)
-			{
-				return true;
-			}
-			return false;
-		}
-		//capture
-		if (input[0] + 1 == input[2] && input[1] - 1 == input[3] || input[0] + 1 == input[2] && input[1] + 1 == input[3])
-		{
-			for (size_t i = 0; i < 7; i++)
-			{
-				if (gameState[input[2]][input[3]] == i) return false;
-			}
-
-			return true;
-		}
-		//casteling
+		enumPosition.insert(enumPosition.end(), { 7, 8, 9, 10, 11, 12 });
 	}
 
-	return false;
+	//capture
+	for (int i = -1; i < 2; i += 2)
+	{
+		for (int j = 0;  j < 6; j++)
+		{
+			if (gameState[startPos.row + direction][startPos.col + i] == enumPosition[j])
+			{
+				possibleMoves.push_back({ startPos.row + direction, startPos.col + i });
+			}
+		}
+	}
+
+	//move forwards
+	if (gameState[startPos.row + direction][startPos.col] == pieces::ES)
+	{
+
+	}
+
+	//promote
 }
 
 std::vector<position> rookMoves(position startPos)
