@@ -9,6 +9,9 @@ extern int moveLog[][6];
 extern bool whiteToMove;
 extern enum pieces;
 
+int blackPieces[6] = { pieces::BP, pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK };
+int whitePieces[6] = { pieces::WP, pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK };
+
 void getUserInput()
 {
 	int input[4];
@@ -53,20 +56,23 @@ bool validateMove(int input[])
 		switch (gameState[input[0]][input[1]])
 		{
 		case pieces::WP:
-			possibleMoves = pawnMoves(startPos);
+			possibleMoves = getPawnMoves(startPos, possibleMoves);
 			break;
 		case pieces::WR:
-			possibleMoves = rookMoves(startPos);
+			possibleMoves = getRookMoves(startPos, possibleMoves, false);
 			break;
 		case pieces::WN:
+			possibleMoves = getKnightMoves(startPos, possibleMoves);
 			break;
 		case pieces::WB:
+			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
 			break;
 		case pieces::WQ:
 			break;
 		case pieces::WK:
 			break;
 		default:
+			std::cout << "This is an enemy piece, please select a piece of yours!\n";
 			return false;
 		}
 	}
@@ -75,20 +81,23 @@ bool validateMove(int input[])
 		switch (gameState[input[0]][input[1]])
 		{
 		case pieces::BP:
-			possibleMoves = pawnMoves(startPos);
+			possibleMoves = getPawnMoves(startPos, possibleMoves);
 			break;
 		case pieces::BR:
-			possibleMoves = rookMoves(startPos);
+			possibleMoves = getRookMoves(startPos, possibleMoves, false);
 			break;
 		case pieces::BN:
+			possibleMoves = getKnightMoves(startPos, possibleMoves);
 			break;
 		case pieces::BB:
+			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
 			break;
 		case pieces::BQ:
 			break;
 		case pieces::BK:
 			break;
 		default:
+			std::cout << "This is an enemy piece, please select a piece of yours!\n";
 			return false;
 		}
 	}
@@ -129,29 +138,52 @@ void pawnPromotion(int input[])
 }
 
 //moves
-std::vector<position> pawnMoves(position startPos)
+std::vector<position> getPawnMoves(position startPos, std::vector<position> possibleMoves)
 {
 	int direction = 0;
 	int startRow = -1;
+<<<<<<< HEAD
+	int enemyPieces[6];
+=======
 
 	std::vector<position> possibleMoves{};
 	std::vector<int> enemyPositionInEnum{};
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+>>>>>>> Stashed changes
 
 	if (whiteToMove)
 	{
 		if (gameState[startPos.row][startPos.col] == pieces::BP) return {};
+		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
+
 		direction = -1;
 		startRow = 6;
+<<<<<<< HEAD
+=======
 
 		enemyPositionInEnum.insert(enemyPositionInEnum.end(), { 1, 2, 3, 4, 5, 6 });
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+>>>>>>> Stashed changes
 	}
 	else
 	{
 		if (gameState[startPos.row][startPos.col] == pieces::WP) return {};
+		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
+
 		direction = 1;
 		startRow = 1;
+<<<<<<< HEAD
+=======
 
 		enemyPositionInEnum.insert(enemyPositionInEnum.end(), { 7, 8, 9, 10, 11, 12 });
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+>>>>>>> Stashed changes
 	}
 
 	//capture
@@ -159,7 +191,15 @@ std::vector<position> pawnMoves(position startPos)
 	{
 		for (int j = 0; j < 6; j++)
 		{
+<<<<<<< Updated upstream
 			if (gameState[startPos.row + direction][startPos.col + i] == enemyPositionInEnum[j])
+=======
+<<<<<<< HEAD
+			if (gameState[startPos.row + direction][startPos.col + i] == enemyPieces[j])
+=======
+			if (gameState[startPos.row + direction][startPos.col + i] == enemyPositionInEnum[j])
+>>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+>>>>>>> Stashed changes
 			{
 				possibleMoves.push_back({ startPos.row + direction, startPos.col + i });
 			}
@@ -176,49 +216,144 @@ std::vector<position> pawnMoves(position startPos)
 			possibleMoves.push_back({ startPos.row + direction * 2, startPos.col });
 		}
 	}
+
+	return possibleMoves;
 }
 
-std::vector<position> rookMoves(position startPos)
+std::vector<position> getRookMoves(position startPos, std::vector<position> possibleMoves, bool queenMode)
 {
-	if (gameState[startPos.row][startPos.col] == pieces::BR && whiteToMove || (gameState[startPos.row][startPos.col] == pieces::WR && !whiteToMove)) return {};
 	int directions[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+	int enemyPieces[6];
 
-	std::vector<position> possibleMoves{};
-
+	if (whiteToMove)
+	{
+		if (!queenMode) if (gameState[startPos.row][startPos.col] == pieces::BR) return {};
+		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
+	}
+	else
+	{
+		if (!queenMode) if (gameState[startPos.row][startPos.col] == pieces::WR) return {};
+		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
+	}
 
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 1; j < 7; j++)
 		{
-			if (directions[i][0] * j + startPos.row < 7 && directions[i][0] * j + startPos.row > 0 &&
-				directions[i][1] * j + startPos.col < 7 && directions[i][1] * j + startPos.col > 0)
+			if (directions[i][0] * j + startPos.row <= 7 && directions[i][0] * j + startPos.row >= 0 &&
+				directions[i][1] * j + startPos.col <= 7 && directions[i][1] * j + startPos.col >= 0)
 			{
-				//exeptions
 				if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == pieces::ES)
 				{
 					possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
 				}
-				for (size_t k = 1; k < 7; k++)
+				for (size_t k = 0; k < 6; k++)
 				{
-					if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == k)
+					if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == enemyPieces[k])
 					{
-						if (whiteToMove)
-						{
-							possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
-						}
-					}
-					else
-					{
-						if (!whiteToMove)
-						{
-							possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
-						}
+						possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
 					}
 				}
 			}
-			break;
 		}
 	}
 
+	return possibleMoves;
+}
+
+std::vector<position> getKnightMoves(position startPos, std::vector<position> possibleMoves)
+{
+
+	int directions[8][2] = { {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1} };
+	int enemyPieces[6];
+
+	if (whiteToMove)
+	{
+		if (gameState[startPos.row][startPos.col] == pieces::BN) return {};
+		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
+	}
+	else
+	{
+		if (gameState[startPos.row][startPos.col] == pieces::WN) return {};
+		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
+	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		if (directions[i][0] + startPos.row <= 7 && directions[i][0] + startPos.row >= 0 &&
+			directions[i][1] + startPos.col <= 7 && directions[i][1] + startPos.col >= 0)
+		{
+			if (gameState[directions[i][0] + startPos.row][directions[i][1] + startPos.col] == pieces::ES)
+			{
+				possibleMoves.push_back({ directions[i][0] + startPos.row, directions[i][1] + startPos.col });
+			}
+			for (size_t k = 0; k < 6; k++)
+			{
+				if (gameState[directions[i][0] + startPos.row][directions[i][1] + startPos.col] == enemyPieces[k])
+				{
+					possibleMoves.push_back({ directions[i][0] + startPos.row, directions[i][1] + startPos.col });
+				}
+			}
+		}
+	}
+
+	return possibleMoves;
+}
+
+std::vector<position> getBishopMoves(position startPos, std::vector<position> possibleMoves, bool queenMode)
+{
+	int directions[4][2] = { {-1, 1}, {-1, -1}, {1, 1}, {-1, 1} };
+	int enemyPieces[6];
+
+	if (whiteToMove)
+	{
+		if (!queenMode) if (gameState[startPos.row][startPos.col] == pieces::BB) return {};
+		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
+	}
+	else
+	{
+		if (!queenMode) if (gameState[startPos.row][startPos.col] == pieces::WB) return {};
+		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 1; j < 7; j++)
+		{
+			if (directions[i][0] * j + startPos.row <= 7 && directions[i][0] * j + startPos.row >= 0 &&
+				directions[i][1] * j + startPos.col <= 7 && directions[i][1] * j + startPos.col >= 0)
+			{
+				if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == pieces::ES)
+				{
+					possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
+				}
+				for (size_t k = 0; k < 6; k++)
+				{
+					if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == enemyPieces[k])
+					{
+						possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
+					}
+				}
+			}
+		}
+	}
+
+	return possibleMoves;
+}
+
+std::vector<position> getQueenMoves(position startPos, std::vector<position> possibleMoves)
+{
+	std::vector<position> bishopMoves;
+
+	possibleMoves = getRookMoves(startPos, possibleMoves, true);
+	bishopMoves = getBishopMoves(startPos, possibleMoves, true);
+
+	possibleMoves.insert(std::end(possibleMoves), std::begin(bishopMoves), std::end(bishopMoves));
+
+	return possibleMoves;
+}
+
+std::vector<position> getKingMoves(position startPos, std::vector<position> possibleMoves)
+{
 	return possibleMoves;
 }

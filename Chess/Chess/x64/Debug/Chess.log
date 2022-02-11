@@ -1,4 +1,3 @@
 ﻿  moveManager.cpp
 C:\Users\mvhet\Documents\GitHub\Cpp-Chess\Chess\Chess\moveManager.cpp(10,19): warning C4091: 'extern ': ignored on left of 'pieces' when no variable is declared
-C:\Users\mvhet\Documents\GitHub\Cpp-Chess\Chess\Chess\moveManager.cpp(173): warning C4715: 'pawnMoves': not all control paths return a value
   Chess.vcxproj -> C:\Users\mvhet\Documents\GitHub\Cpp-Chess\Chess\x64\Debug\Chess.exe
