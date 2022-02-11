@@ -149,6 +149,10 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 	std::vector<position> possibleMoves{};
 	std::vector<int> enemyPositionInEnum{};
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+>>>>>>> Stashed changes
 =======
 >>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
 >>>>>>> Stashed changes
@@ -165,6 +169,10 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 
 		enemyPositionInEnum.insert(enemyPositionInEnum.end(), { 1, 2, 3, 4, 5, 6 });
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+>>>>>>> Stashed changes
 =======
 >>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
 >>>>>>> Stashed changes
@@ -181,6 +189,10 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 
 		enemyPositionInEnum.insert(enemyPositionInEnum.end(), { 7, 8, 9, 10, 11, 12 });
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+>>>>>>> Stashed changes
 =======
 >>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
 >>>>>>> Stashed changes
@@ -192,13 +204,19 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 		for (int j = 0; j < 6; j++)
 		{
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 			if (gameState[startPos.row + direction][startPos.col + i] == enemyPositionInEnum[j])
 =======
+=======
+>>>>>>> Stashed changes
 <<<<<<< HEAD
 			if (gameState[startPos.row + direction][startPos.col + i] == enemyPieces[j])
 =======
 			if (gameState[startPos.row + direction][startPos.col + i] == enemyPositionInEnum[j])
 >>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 			{
 				possibleMoves.push_back({ startPos.row + direction, startPos.col + i });
