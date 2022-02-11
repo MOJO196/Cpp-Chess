@@ -85,8 +85,10 @@ bool validateMove(int input[])
 			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
 			break;
 		case pieces::WQ:
+			possibleMoves = getQueenMoves(startPos, possibleMoves);
 			break;
 		case pieces::WK:
+			possibleMoves = getKingMoves(startPos, possibleMoves);
 			break;
 		default:
 			std::cout << "This is an enemy piece, please select a piece of yours!\n";
@@ -110,8 +112,10 @@ bool validateMove(int input[])
 			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
 			break;
 		case pieces::BQ:
+			possibleMoves = getQueenMoves(startPos, possibleMoves);
 			break;
 		case pieces::BK:
+			possibleMoves = getKingMoves(startPos, possibleMoves);
 			break;
 		default:
 			std::cout << "This is an enemy piece, please select a piece of yours!\n";
@@ -266,6 +270,8 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 	int directions[4][2] = { {-1, 1}, {-1, -1}, {1, 1}, {-1, 1} };
 	int enemyPieces[6];
 
+	bool loopEnd;
+
 	if (whiteToMove)
 	{
 		if (!queenMode) if (gameState[startPos.row][startPos.col] == pieces::BB) return {};
@@ -279,7 +285,8 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 1; j < 7; j++)
+		loopEnd = false;
+		for (int j = 1; j < 7 || !loopEnd; j++)
 		{
 			if (directions[i][0] * j + startPos.row <= 7 && directions[i][0] * j + startPos.row >= 0 &&
 				directions[i][1] * j + startPos.col <= 7 && directions[i][1] * j + startPos.col >= 0)
@@ -293,6 +300,8 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 					if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == enemyPieces[k])
 					{
 						possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
+						loopEnd = true;
+						break;
 					}
 				}
 			}
@@ -316,6 +325,38 @@ std::vector<position> getQueenMoves(position startPos, std::vector<position> pos
 
 std::vector<position> getKingMoves(position startPos, std::vector<position> possibleMoves)
 {
+	int directions[8][2] = { {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
+	int enemyPieces[6];
+
+	if (whiteToMove)
+	{
+		if (gameState[startPos.row][startPos.col] == pieces::BK) return {};
+		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
+	}
+	else
+	{
+		if (gameState[startPos.row][startPos.col] == pieces::WK) return {};
+		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
+	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		if (directions[i][0] + startPos.row <= 7 && directions[i][0] + startPos.row >= 0 &&
+			directions[i][1] + startPos.col <= 7 && directions[i][1] + startPos.col >= 0)
+		{
+			if (gameState[directions[i][0] + startPos.row][directions[i][1] + startPos.col] == pieces::ES)
+			{
+				possibleMoves.push_back({ directions[i][0] + startPos.row, directions[i][1] + startPos.col });
+			}
+			for (size_t k = 0; k < 6; k++)
+			{
+				if (gameState[directions[i][0] + startPos.row][directions[i][1] + startPos.col] == enemyPieces[k])
+				{
+					possibleMoves.push_back({ directions[i][0] + startPos.row, directions[i][1] + startPos.col });
+				}
+			}
+		}
+	}
 
 	return possibleMoves;
 }
