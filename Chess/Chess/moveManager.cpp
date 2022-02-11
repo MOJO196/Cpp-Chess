@@ -34,9 +34,26 @@ void getUserInput()
 	gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
 	gameState[input[0]][input[1]] = pieces::ES;
 
+	//pawn Promotion
 	if (gameState[input[0]][input[1]] == pieces::BP || gameState[input[0]][input[1]] == pieces::WP && (input[2] == 0 || input[2] == 7))
 	{
-		pawnPromotion(input);
+		for (;;)
+		{
+			int pieceID = -1;
+			std::cout << "Enter the ID of a piece you want to promote!\n";
+			std::cin >> pieceID;
+
+			if (whiteToMove && pieceID == pieces::WN || pieceID == pieces::WB || pieceID == pieces::WR || pieceID == pieces::WQ)
+			{
+				gameState[input[2]][input[3]] = pieceID;
+				break;
+			}
+			else if (!whiteToMove && pieceID == pieces::BN || pieceID == pieces::BB || pieceID == pieces::BR || pieceID == pieces::BQ)
+			{
+				gameState[input[2]][input[3]] = pieceID;
+				break;
+			}
+		}
 	}
 }
 
@@ -114,48 +131,12 @@ bool validateMove(int input[])
 	//check if move is valid
 }
 
-void pawnPromotion(int input[])
-{
-	//pawn Promotion
-
-	for (;;)
-	{
-		int pieceID = -1;
-		std::cout << "Enter the ID of a piece you want to promote!\n";
-		std::cin >> pieceID;
-
-		if (whiteToMove && pieceID == pieces::WN || pieceID == pieces::WB || pieceID == pieces::WR || pieceID == pieces::WQ)
-		{
-			gameState[input[2]][input[3]] = pieceID;
-			break;
-		}
-		else if (!whiteToMove && pieceID == pieces::BN || pieceID == pieces::BB || pieceID == pieces::BR || pieceID == pieces::BQ)
-		{
-			gameState[input[2]][input[3]] = pieceID;
-			break;
-		}
-	}
-}
-
 //moves
 std::vector<position> getPawnMoves(position startPos, std::vector<position> possibleMoves)
 {
 	int direction = 0;
 	int startRow = -1;
-<<<<<<< HEAD
 	int enemyPieces[6];
-=======
-
-	std::vector<position> possibleMoves{};
-	std::vector<int> enemyPositionInEnum{};
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
->>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
->>>>>>> Stashed changes
-=======
->>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
->>>>>>> Stashed changes
 
 	if (whiteToMove)
 	{
@@ -164,18 +145,6 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 
 		direction = -1;
 		startRow = 6;
-<<<<<<< HEAD
-=======
-
-		enemyPositionInEnum.insert(enemyPositionInEnum.end(), { 1, 2, 3, 4, 5, 6 });
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
->>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
->>>>>>> Stashed changes
-=======
->>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
->>>>>>> Stashed changes
 	}
 	else
 	{
@@ -184,18 +153,6 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 
 		direction = 1;
 		startRow = 1;
-<<<<<<< HEAD
-=======
-
-		enemyPositionInEnum.insert(enemyPositionInEnum.end(), { 7, 8, 9, 10, 11, 12 });
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
->>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
->>>>>>> Stashed changes
-=======
->>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
->>>>>>> Stashed changes
 	}
 
 	//capture
@@ -203,21 +160,7 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 	{
 		for (int j = 0; j < 6; j++)
 		{
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-			if (gameState[startPos.row + direction][startPos.col + i] == enemyPositionInEnum[j])
-=======
-=======
->>>>>>> Stashed changes
-<<<<<<< HEAD
 			if (gameState[startPos.row + direction][startPos.col + i] == enemyPieces[j])
-=======
-			if (gameState[startPos.row + direction][startPos.col + i] == enemyPositionInEnum[j])
->>>>>>> 9364e8dd6286c53990efa63d8e854141d9efd582
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 			{
 				possibleMoves.push_back({ startPos.row + direction, startPos.col + i });
 			}
@@ -373,5 +316,6 @@ std::vector<position> getQueenMoves(position startPos, std::vector<position> pos
 
 std::vector<position> getKingMoves(position startPos, std::vector<position> possibleMoves)
 {
+
 	return possibleMoves;
 }
