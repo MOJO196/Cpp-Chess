@@ -12,6 +12,9 @@ extern enum pieces;
 int blackPieces[6] = { pieces::BP, pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK };
 int whitePieces[6] = { pieces::WP, pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK };
 
+position blackKingPos = {0, 4};
+position whiteKingPos = {7, 4};
+
 void getUserInput()
 {
 	int input[4];
@@ -37,23 +40,15 @@ void getUserInput()
 	//pawn Promotion
 	if (gameState[input[0]][input[1]] == pieces::BP || gameState[input[0]][input[1]] == pieces::WP && (input[2] == 0 || input[2] == 7))
 	{
-		for (;;)
-		{
-			int pieceID = -1;
-			std::cout << "Enter the ID of a piece you want to promote!\n";
-			std::cin >> pieceID;
+		pawnPromotion(input);
+	}
 
-			if (whiteToMove && pieceID == pieces::WN || pieceID == pieces::WB || pieceID == pieces::WR || pieceID == pieces::WQ)
-			{
-				gameState[input[2]][input[3]] = pieceID;
-				break;
-			}
-			else if (!whiteToMove && pieceID == pieces::BN || pieceID == pieces::BB || pieceID == pieces::BR || pieceID == pieces::BQ)
-			{
-				gameState[input[2]][input[3]] = pieceID;
-				break;
-			}
-		}
+	if (gameState[input[0]][input[1]] == pieces::WK || gameState[input[0]][input[1]] == pieces::BK)
+	{
+		position newKingPos = { input[2], input[3] };
+
+		if (whiteToMove) whiteKingPos = newKingPos;
+		else blackKingPos = newKingPos;
 	}
 }
 
@@ -69,6 +64,7 @@ bool validateMove(int input[])
 	position startPos = { input[0], input[1] };
 	position endPos = { input[2], input[3] };
 
+	//getAllPossibleMoves
 	if (whiteToMove) {
 		switch (gameState[input[0]][input[1]])
 		{
@@ -123,16 +119,64 @@ bool validateMove(int input[])
 		}
 	}
 
-	//check
+	//visualizeMoves
+	int moves[8][8] = { 0 };
 
-	//doMove
 	for (int i = 0; i < possibleMoves.size(); i++)
 	{
-		if (possibleMoves[i].col == endPos.col && possibleMoves[i].row == endPos.row) return true;
+		moves[possibleMoves[i].row][possibleMoves[i].col] = 1;
 	}
 
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (moves[i][j] == 0) std::cout << "-- ";
+			else std::cout << "XX ";
+		}
+		std::cout << "\n";
+	}
+
+	//validate
+
+	//moveDoAble
+	for (int i = 0; i < possibleMoves.size(); i++)
+	{
+		if (possibleMoves[i].col == endPos.col && possibleMoves[i].row == endPos.row) moveValid = true;
+	}
+
+	if (!moveValid) return false;
+	
+	//checks
+	return moveValid;
+}
+
+bool checkForCheck(int input[])
+{
 	return false;
-	//check if move is valid
+}
+
+void pawnPromotion(int input[])
+{
+	//pawn Promotion
+
+	for (;;)
+	{
+		int pieceID = -1;
+		std::cout << "Enter the ID of a piece you want to promote!\n";
+		std::cin >> pieceID;
+
+		if (whiteToMove && pieceID == pieces::WN || pieceID == pieces::WB || pieceID == pieces::WR || pieceID == pieces::WQ)
+		{
+			gameState[input[2]][input[3]] = pieceID;
+			break;
+		}
+		else if (!whiteToMove && pieceID == pieces::BN || pieceID == pieces::BB || pieceID == pieces::BR || pieceID == pieces::BQ)
+		{
+			gameState[input[2]][input[3]] = pieceID;
+			break;
+		}
+	}
 }
 
 //moves
@@ -203,7 +247,7 @@ std::vector<position> getRookMoves(position startPos, std::vector<position> poss
 
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 1; j < 7; j++)
+		for (int j = 1; j < 8; j++)
 		{
 			if (directions[i][0] * j + startPos.row <= 7 && directions[i][0] * j + startPos.row >= 0 &&
 				directions[i][1] * j + startPos.col <= 7 && directions[i][1] * j + startPos.col >= 0)
@@ -212,12 +256,18 @@ std::vector<position> getRookMoves(position startPos, std::vector<position> poss
 				{
 					possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
 				}
-				for (size_t k = 0; k < 6; k++)
+				else
 				{
-					if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == enemyPieces[k])
+					for (size_t k = 0; k < 6; k++)
 					{
-						possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
+						if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == enemyPieces[k])
+						{
+							possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
+							break;
+						}
 					}
+
+					j = 8;
 				}
 			}
 		}
@@ -257,6 +307,7 @@ std::vector<position> getKnightMoves(position startPos, std::vector<position> po
 				if (gameState[directions[i][0] + startPos.row][directions[i][1] + startPos.col] == enemyPieces[k])
 				{
 					possibleMoves.push_back({ directions[i][0] + startPos.row, directions[i][1] + startPos.col });
+					break;
 				}
 			}
 		}
@@ -269,9 +320,6 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 {
 	int directions[4][2] = { {-1, 1}, {-1, -1}, {1, 1}, {-1, 1} };
 	int enemyPieces[6];
-
-	bool loopEnd;
-
 	if (whiteToMove)
 	{
 		if (!queenMode) if (gameState[startPos.row][startPos.col] == pieces::BB) return {};
@@ -285,8 +333,7 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 
 	for (int i = 0; i < 4; i++)
 	{
-		loopEnd = false;
-		for (int j = 1; j < 7 || !loopEnd; j++)
+		for (int j = 1; j < 8; j++)
 		{
 			if (directions[i][0] * j + startPos.row <= 7 && directions[i][0] * j + startPos.row >= 0 &&
 				directions[i][1] * j + startPos.col <= 7 && directions[i][1] * j + startPos.col >= 0)
@@ -295,14 +342,18 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 				{
 					possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
 				}
-				for (size_t k = 0; k < 6; k++)
+				else
 				{
-					if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == enemyPieces[k])
+					for (size_t k = 0; k < 6; k++)
 					{
-						possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
-						loopEnd = true;
-						break;
+						if (gameState[directions[i][0] * j + startPos.row][directions[i][1] * j + startPos.col] == enemyPieces[k])
+						{
+							possibleMoves.push_back({ directions[i][0] * j + startPos.row, directions[i][1] * j + startPos.col });
+							break;
+						}
 					}
+
+					j = 8;
 				}
 			}
 		}
