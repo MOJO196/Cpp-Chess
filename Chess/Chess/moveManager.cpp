@@ -99,24 +99,34 @@ bool validateMove(int input[])
 	if (!moveValid) return false;
 
 	//checks
-	//checkForCheck(input);
+	//checkForCheck(input, startPos);
 	
 	return moveValid;
 }
 
-bool checkForCheck(int input[])
+bool checkForCheck(int input[], position startPos)
 {
 	int replacedPiece = gameState[input[2]][input[3]];
+	int movedPiece = gameState[input[0]][input[1]];
+	int allyPieces[6];
+
+	position allyKingPos;
+	std::vector<position> moves{};
+
+	gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
+	gameState[input[0]][input[1]] = pieces::ES;
 
 	whiteToMove = !whiteToMove;
 
 	if (whiteToMove)
 	{
-
+		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(allyPieces));
+		allyKingPos = blackKingPos;
 	}
 	else
 	{
-
+		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(allyPieces));
+		allyKingPos = whiteKingPos;
 	}
 
 	for (size_t i = 0; i < 8; i++)
@@ -127,13 +137,29 @@ bool checkForCheck(int input[])
 			{
 				for (size_t k = 0; k < 6; k++)
 				{
+					if (gameState[i][j] = allyPieces[k])
+					{
+						moves = getPossibleMoves(startPos, moves);
 
+						for (size_t l = 0; l < moves.size(); l++)
+						{
+							if (moves[l].row == allyKingPos.row && moves[l].col == allyKingPos.col)
+							{
+								gameState[input[0]][input[1]] = movedPiece;
+								gameState[input[2]][input[3]] = replacedPiece;
+								return false;
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 
 	whiteToMove = !whiteToMove;
+
+	gameState[input[0]][input[1]] = movedPiece;
+	gameState[input[2]][input[3]] = replacedPiece;
 
 	return true;
 }
