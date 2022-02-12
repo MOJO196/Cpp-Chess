@@ -6,7 +6,9 @@ struct position
 
 void getUserInput();
 bool validateMove(int input[]);
-bool checkForCheck();
+bool checkForCheck(int input[]);
+
+std::vector<position> getPossibleMoves(position startPos, std::vector<position> possibleMoves);
 
 void pawnPromotion(int input[]);
 std::vector<position> getPawnMoves(position startPos, std::vector<position> possibleMoves);

@@ -64,60 +64,7 @@ bool validateMove(int input[])
 	position startPos = { input[0], input[1] };
 	position endPos = { input[2], input[3] };
 
-	//getAllPossibleMoves
-	if (whiteToMove) {
-		switch (gameState[input[0]][input[1]])
-		{
-		case pieces::WP:
-			possibleMoves = getPawnMoves(startPos, possibleMoves);
-			break;
-		case pieces::WR:
-			possibleMoves = getRookMoves(startPos, possibleMoves, false);
-			break;
-		case pieces::WN:
-			possibleMoves = getKnightMoves(startPos, possibleMoves);
-			break;
-		case pieces::WB:
-			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
-			break;
-		case pieces::WQ:
-			possibleMoves = getQueenMoves(startPos, possibleMoves);
-			break;
-		case pieces::WK:
-			possibleMoves = getKingMoves(startPos, possibleMoves);
-			break;
-		default:
-			std::cout << "This is an enemy piece, please select a piece of yours!\n";
-			return false;
-		}
-	}
-	else
-	{
-		switch (gameState[input[0]][input[1]])
-		{
-		case pieces::BP:
-			possibleMoves = getPawnMoves(startPos, possibleMoves);
-			break;
-		case pieces::BR:
-			possibleMoves = getRookMoves(startPos, possibleMoves, false);
-			break;
-		case pieces::BN:
-			possibleMoves = getKnightMoves(startPos, possibleMoves);
-			break;
-		case pieces::BB:
-			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
-			break;
-		case pieces::BQ:
-			possibleMoves = getQueenMoves(startPos, possibleMoves);
-			break;
-		case pieces::BK:
-			possibleMoves = getKingMoves(startPos, possibleMoves);
-			break;
-		default:
-			std::cout << "This is an enemy piece, please select a piece of yours!\n";
-			return false;
-		}
-	}
+	possibleMoves = getPossibleMoves(startPos, possibleMoves);
 
 	//visualizeMoves
 	int moves[8][8] = { 0 };
@@ -139,21 +86,115 @@ bool validateMove(int input[])
 
 	//validate
 
-	//moveDoAble
+	//is move doable
 	for (int i = 0; i < possibleMoves.size(); i++)
 	{
-		if (possibleMoves[i].col == endPos.col && possibleMoves[i].row == endPos.row) moveValid = true;
+		if (possibleMoves[i].col == endPos.col && possibleMoves[i].row == endPos.row)
+		{
+			moveValid = true;
+			break;
+		}
 	}
 
 	if (!moveValid) return false;
-	
+
 	//checks
+	//checkForCheck(input);
+	
 	return moveValid;
 }
 
 bool checkForCheck(int input[])
 {
-	return false;
+	int replacedPiece = gameState[input[2]][input[3]];
+
+	whiteToMove = !whiteToMove;
+
+	if (whiteToMove)
+	{
+
+	}
+	else
+	{
+
+	}
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		for (size_t j = 0; j < 8; j++)
+		{
+			if (gameState[i][j] != pieces::ES)
+			{
+				for (size_t k = 0; k < 6; k++)
+				{
+
+				}
+			}
+		}
+	}
+
+	whiteToMove = !whiteToMove;
+
+	return true;
+}
+
+std::vector<position> getPossibleMoves(position startPos, std::vector<position> possibleMoves)
+{
+	if (whiteToMove) {
+		switch (gameState[startPos.row][startPos.col])
+		{
+		case pieces::WP:
+			possibleMoves = getPawnMoves(startPos, possibleMoves);
+			break;
+		case pieces::WR:
+			possibleMoves = getRookMoves(startPos, possibleMoves, false);
+			break;
+		case pieces::WN:
+			possibleMoves = getKnightMoves(startPos, possibleMoves);
+			break;
+		case pieces::WB:
+			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
+			break;
+		case pieces::WQ:
+			possibleMoves = getQueenMoves(startPos, possibleMoves);
+			break;
+		case pieces::WK:
+			possibleMoves = getKingMoves(startPos, possibleMoves);
+			break;
+		default:
+			std::cout << "This is an enemy piece, please select a piece of yours!\n";
+			return {};
+		}
+	}
+	else
+	{
+		switch (gameState[startPos.row][startPos.col])
+		{
+		case pieces::BP:
+			possibleMoves = getPawnMoves(startPos, possibleMoves);
+			break;
+		case pieces::BR:
+			possibleMoves = getRookMoves(startPos, possibleMoves, false);
+			break;
+		case pieces::BN:
+			possibleMoves = getKnightMoves(startPos, possibleMoves);
+			break;
+		case pieces::BB:
+			possibleMoves = getBishopMoves(startPos, possibleMoves, false);
+			break;
+		case pieces::BQ:
+			possibleMoves = getQueenMoves(startPos, possibleMoves);
+			break;
+		case pieces::BK:
+			possibleMoves = getKingMoves(startPos, possibleMoves);
+			break;
+		default:
+			std::cout << "This is an enemy piece, please select a piece of yours!\n";
+			return {};
+		}
+	}
+
+	return possibleMoves;
 }
 
 void pawnPromotion(int input[])
