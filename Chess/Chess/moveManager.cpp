@@ -66,6 +66,7 @@ bool validateMove(int input[])
 
 	possibleMoves = getPossibleMoves(startPos, possibleMoves);
 
+
 	//visualizeMoves
 	int moves[8][8] = { 0 };
 
@@ -99,35 +100,35 @@ bool validateMove(int input[])
 	if (!moveValid) return false;
 
 	//checks
-	//checkForCheck(input, startPos);
+	moveValid = checkForCheck(endPos, startPos);
 	
 	return moveValid;
 }
 
-bool checkForCheck(int input[], position startPos)
+bool checkForCheck(position endPos, position startPos)
 {
-	int replacedPiece = gameState[input[2]][input[3]];
-	int movedPiece = gameState[input[0]][input[1]];
-	int allyPieces[6];
+	int movedPiece = gameState[endPos.row][endPos.col];
+	int replacedPiece = gameState[endPos.row][endPos.col];
+	int enemyPieces[6];
 
-	position allyKingPos;
+	position enemyKingPos;
 	std::vector<position> moves{};
 
-	gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
-	gameState[input[0]][input[1]] = pieces::ES;
-
-	whiteToMove = !whiteToMove;
+	gameState[endPos.row][endPos.col] = gameState[startPos.row][startPos.col];
+	gameState[startPos.row][startPos.col] = pieces::ES;
 
 	if (whiteToMove)
 	{
-		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(allyPieces));
-		allyKingPos = blackKingPos;
+		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
+		enemyKingPos = blackKingPos;
 	}
 	else
 	{
-		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(allyPieces));
-		allyKingPos = whiteKingPos;
+		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
+		enemyKingPos = whiteKingPos;
 	}
+
+	whiteToMove = !whiteToMove;
 
 	for (size_t i = 0; i < 8; i++)
 	{
@@ -137,16 +138,19 @@ bool checkForCheck(int input[], position startPos)
 			{
 				for (size_t k = 0; k < 6; k++)
 				{
-					if (gameState[i][j] = allyPieces[k])
+					if (gameState[i][j] = enemyPieces[k])
 					{
 						moves = getPossibleMoves(startPos, moves);
 
 						for (size_t l = 0; l < moves.size(); l++)
 						{
-							if (moves[l].row == allyKingPos.row && moves[l].col == allyKingPos.col)
+							if (moves[l].row == enemyKingPos.row && moves[l].col == enemyKingPos.col)
 							{
-								gameState[input[0]][input[1]] = movedPiece;
-								gameState[input[2]][input[3]] = replacedPiece;
+								gameState[startPos.row][startPos.col] = movedPiece;
+								gameState[endPos.row][endPos.col] = replacedPiece;
+
+								whiteToMove = !whiteToMove;
+
 								return false;
 							}
 						}
@@ -158,8 +162,8 @@ bool checkForCheck(int input[], position startPos)
 
 	whiteToMove = !whiteToMove;
 
-	gameState[input[0]][input[1]] = movedPiece;
-	gameState[input[2]][input[3]] = replacedPiece;
+	gameState[startPos.row][startPos.col] = movedPiece;
+	gameState[endPos.row][endPos.col] = replacedPiece;
 
 	return true;
 }
