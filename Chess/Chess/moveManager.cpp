@@ -12,8 +12,8 @@ extern enum pieces;
 int blackPieces[6] = { pieces::BP, pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK };
 int whitePieces[6] = { pieces::WP, pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK };
 
-position blackKingPos = {0, 4};
-position whiteKingPos = {7, 4};
+position blackKingPos = { 0, 4 };
+position whiteKingPos = { 7, 4 };
 
 void getUserInput()
 {
@@ -101,7 +101,7 @@ bool validateMove(int input[])
 
 	//checks
 	moveValid = checkForCheck(endPos, startPos);
-	
+
 	return moveValid;
 }
 
@@ -138,7 +138,7 @@ bool checkForCheck(position endPos, position startPos)
 			{
 				for (size_t k = 0; k < 6; k++)
 				{
-					if (gameState[i][j] = enemyPieces[k])
+					if (gameState[i][j] == enemyPieces[k])
 					{
 						moves = getPossibleMoves(startPos, moves);
 
@@ -338,7 +338,7 @@ std::vector<position> getRookMoves(position startPos, std::vector<position> poss
 						}
 					}
 
-					j = 8;
+					j = 8; //break out of two for loops
 				}
 			}
 		}
@@ -424,7 +424,7 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 						}
 					}
 
-					j = 8;
+					j = 8; //break out of two for loops
 				}
 			}
 		}
