@@ -1,7 +1,7 @@
 #include <iostream>
 #include "common.h"
 
-const char* pieceNames[] = { "ES", "BP", "BR", "BN", "BB", "BQ", "BK", "WP", "WR", "WN", "WB", "WQ", "WK" }; //guter code
+const char* pieceNames[] = { "ES", "BP", "BR", "BN", "BB", "BQ", "BK", "WP", "WR", "WN", "WB", "WQ", "WK" };
 
 extern int gameState[8][8];
 
