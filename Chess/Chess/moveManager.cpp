@@ -19,7 +19,7 @@ int gameState[8][8] =
 	{pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK, pieces::BB, pieces::BN, pieces::BR},
 	{pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
-	{pieces::WQ, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
+	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP},
@@ -150,7 +150,7 @@ bool validateMove(int input[])
 			if (moves[i][j] == 0) std::cout << "-- ";
 			else std::cout << "XX ";
 		}
-		std::cout << "\n";
+		std::cout << std::endl;
 	}
 
 	//validate
@@ -229,7 +229,7 @@ bool checkForCheck(position endPos, position startPos)
 
 								whiteToMove = !whiteToMove;
 
-								std::cout << "Your king is in danger!\n";
+								std::cout << "Your king is in danger!" << std::endl;
 
 								return false;
 							}
@@ -239,6 +239,7 @@ bool checkForCheck(position endPos, position startPos)
 			}
 		}
 	}
+
 	gameState[startPos.row][startPos.col] = movedPiece;
 	gameState[endPos.row][endPos.col] = replacedPiece;
 
@@ -265,7 +266,7 @@ std::vector<position> getPossibleMoves(position startPos, std::vector<position> 
 		case pieces::WK:
 			return getKingMoves(startPos, possibleMoves);
 		default:
-			std::cout << "This is an enemy piece, please select a piece of yours!\n";
+			std::cout << "This is an enemy piece, please select a piece of yours!" << std::endl;
 			return possibleMoves = { { -1, -1 } };
 		}
 	}
@@ -286,7 +287,7 @@ std::vector<position> getPossibleMoves(position startPos, std::vector<position> 
 		case pieces::BK:
 			return getKingMoves(startPos, possibleMoves);
 		default:
-			std::cout << "This is an enemy piece, please select a piece of yours!\n";
+			std::cout << "This is an enemy piece, please select a piece of yours!" << std::endl;
 			return possibleMoves = { { -1, -1 } };
 		}
 	}
@@ -299,7 +300,8 @@ void pawnPromotion(int input[])
 	for (;;)
 	{
 		int pieceID = -1;
-		std::cout << "Enter the ID of a piece you want to promote!\n";
+
+		std::cout << "Enter the ID of a piece you want to promote!" << std::endl;
 		std::cin >> pieceID;
 
 		if (whiteToMove && pieceID == pieces::WN || pieceID == pieces::WB || pieceID == pieces::WR || pieceID == pieces::WQ)
@@ -328,6 +330,7 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 		{
 			return {};
 		}
+
 		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
 
 		direction = -1;
@@ -339,6 +342,7 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 		{
 			return {};
 		}
+
 		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
 
 		direction = 1;
@@ -382,6 +386,7 @@ std::vector<position> getRookMoves(position startPos, std::vector<position> poss
 		{
 			return {};
 		}
+
 		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
 	}
 	else
@@ -390,6 +395,7 @@ std::vector<position> getRookMoves(position startPos, std::vector<position> poss
 		{
 			return {};
 		}
+
 		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
 	}
 
@@ -414,6 +420,7 @@ std::vector<position> getRookMoves(position startPos, std::vector<position> poss
 							break;
 						}
 					}
+
 					j = 8; //break out of two for loops
 				}
 			}
@@ -435,6 +442,7 @@ std::vector<position> getKnightMoves(position startPos, std::vector<position> po
 		{
 			return {};
 		}
+
 		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
 	}
 	else
@@ -443,6 +451,7 @@ std::vector<position> getKnightMoves(position startPos, std::vector<position> po
 		{
 			return {};
 		}
+
 		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
 	}
 
@@ -473,12 +482,14 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 {
 	int directions[4][2] = { {-1, 1}, {-1, -1}, {1, 1}, {-1, 1} };
 	int enemyPieces[6];
+
 	if (whiteToMove)
 	{
 		if (!queenMode) if (gameState[startPos.row][startPos.col] == pieces::BB)
 		{
 			return {};
 		}
+
 		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
 	}
 	else
@@ -487,6 +498,7 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 		{
 			return {};
 		}
+
 		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
 	}
 
@@ -511,6 +523,7 @@ std::vector<position> getBishopMoves(position startPos, std::vector<position> po
 							break;
 						}
 					}
+
 					j = 8; //break out of two for loops
 				}
 			}
@@ -543,6 +556,7 @@ std::vector<position> getKingMoves(position startPos, std::vector<position> poss
 		{
 			return {};
 		}
+
 		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
 	}
 	else
@@ -551,6 +565,7 @@ std::vector<position> getKingMoves(position startPos, std::vector<position> poss
 		{
 			return {};
 		}
+
 		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
 	}
 
