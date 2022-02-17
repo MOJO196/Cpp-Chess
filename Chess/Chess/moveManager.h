@@ -4,6 +4,14 @@ struct position
 	int col;
 };
 
+struct move
+{
+	position startPos;
+	position endPos;
+	int startPiece;
+	int endPiece;
+};
+
 void getUserInput();
 bool validateMove(int input[]);
 bool checkForCheck(position endPos, position startPos);
