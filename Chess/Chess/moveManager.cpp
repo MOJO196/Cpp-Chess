@@ -9,6 +9,7 @@
 extern int gameState[8][8];
 extern int moveCount;
 extern bool whiteToMove;
+extern bool gameIsRunning;
 extern enum pieces;
 
 int blackPieces[6] = { pieces::BP, pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK };
@@ -60,6 +61,8 @@ void getUserInput()
 				gameState[input[0]][input[1]] = pieces::ES;
 				break;
 			}
+
+			if (!gameIsRunning) break;
 
 			std::cout << "\x1B[2J\x1B[H";
 			printGameState();
@@ -224,12 +227,21 @@ bool checkForCheck(position endPos, position startPos)
 
 							if (moves[l].row == kingPos.row && moves[l].col == kingPos.col)
 							{
+								char giveUp;
+
 								gameState[startPos.row][startPos.col] = movedPiece;
 								gameState[endPos.row][endPos.col] = replacedPiece;
 
 								whiteToMove = !whiteToMove;
 
 								std::cout << "Your king is in danger!" << std::endl;
+								std::cout << "Do you want to give up? [y/n]" << std::endl;
+								std::cin >> giveUp;
+
+								if (giveUp == 'y' || giveUp == 'Y')
+								{
+									gameIsRunning = false;
+								}
 
 								return false;
 							}
