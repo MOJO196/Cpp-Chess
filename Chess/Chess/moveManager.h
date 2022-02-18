@@ -16,8 +16,9 @@ void getUserInput();
 bool validateMove(int input[]);
 bool checkForCheck(position endPos, position startPos);
 
-std::vector<position> getPossibleMoves(position startPos, std::vector<position> possibleMoves);
+std::vector<position> getPossibleMoves(position startPos, position endPos, std::vector<position> possibleMoves);
 
+bool casteling(position startPos, position endPos);
 void pawnPromotion(int input[]);
 std::vector<position> getPawnMoves(position startPos, std::vector<position> possibleMoves);
 std::vector<position> getRookMoves(position startPos, std::vector<position> possibleMoves, bool queenMode);

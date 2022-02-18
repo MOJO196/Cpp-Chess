@@ -131,7 +131,7 @@ bool validateMove(int input[])
 	position startPos = { input[0], input[1] };
 	position endPos = { input[2], input[3] };
 
-	possibleMoves = getPossibleMoves(startPos, possibleMoves);
+	possibleMoves = getPossibleMoves(startPos, endPos, possibleMoves);
 
 	if (possibleMoves[0].row == -1)
 	{
@@ -216,7 +216,7 @@ bool checkForCheck(position endPos, position startPos)
 					if (gameState[i][j] == enemyPieces[k])
 					{
 						piecePos = { i, j };
-						moves = getPossibleMoves(piecePos, moves);
+						moves = getPossibleMoves(piecePos, { -1 , -1 }, moves);
 
 						for (int l = 0; l < moves.size(); l++)
 						{
@@ -260,7 +260,33 @@ bool checkForCheck(position endPos, position startPos)
 	return true;
 }
 
-std::vector<position> getPossibleMoves(position startPos, std::vector<position> possibleMoves)
+bool casteling(position startPos, position endPos)
+{
+	std::vector<position> piecesBetween;
+
+	//get positions in between
+	if (whiteToMove)
+	{
+		if (endPos.col = 0)
+		{
+
+		}
+		else if (endPos.col = 7)
+		{
+
+		}
+	}
+	else
+	{
+
+	}
+
+	//for every position
+
+	return true;
+}
+
+std::vector<position> getPossibleMoves(position startPos, position endPos, std::vector<position> possibleMoves)
 {
 	if (whiteToMove) {
 		switch (gameState[startPos.row][startPos.col])
@@ -276,6 +302,12 @@ std::vector<position> getPossibleMoves(position startPos, std::vector<position> 
 		case pieces::WQ:
 			return getQueenMoves(startPos, possibleMoves);
 		case pieces::WK:
+			if (gameState[endPos.row][endPos.col] == pieces::BR && endPos.row == 0)
+			{
+				casteling(startPos, endPos);
+				return { { -2, -2 } };
+			}
+
 			return getKingMoves(startPos, possibleMoves);
 		default:
 			std::cout << "This is an enemy piece, please select a piece of yours!" << std::endl;
@@ -297,6 +329,12 @@ std::vector<position> getPossibleMoves(position startPos, std::vector<position> 
 		case pieces::BQ:
 			return getQueenMoves(startPos, possibleMoves);
 		case pieces::BK:
+			if (gameState[endPos.row][endPos.col] == pieces::BR && endPos.row == 0)
+			{
+				casteling(startPos, endPos);
+				return { { -2, -2 } };
+			}
+
 			return getKingMoves(startPos, possibleMoves);
 		default:
 			std::cout << "This is an enemy piece, please select a piece of yours!" << std::endl;
