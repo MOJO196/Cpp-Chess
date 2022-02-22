@@ -32,6 +32,16 @@ position whiteKingPos = { 7, 4 };
 
 std::vector<move> moveLog{};
 
+castleManager casManager = {false, -1};
+
+castling validCastleDirections[4] = 
+{
+	{{0, 4}, {0, 2}, {0, 0}, {0, 3}},
+	{{0, 4}, {0, 6}, {0, 7}, {0, 5}},
+	{{7, 4}, {7, 2}, {7, 0}, {7, 3}},
+	{{7, 4}, {7, 6}, {7, 7}, {7, 5}}
+};
+
 void getUserInput()
 {
 	int input[4];
@@ -55,10 +65,25 @@ void getUserInput()
 
 			if (validateMove(input))
 			{
-				moveLog.push_back({ {input[0], input[1]}, {input[2], input[3]}, gameState[input[0]][input[1]], gameState[input[2]][input[3]] });
+				if (casManager.castleOnNextMove)
+				{
+					int dir = casManager.dir;
+					moveLog.push_back({ {input[0], input[1]}, {input[2], input[3]}, gameState[input[0]][input[1]], gameState[input[2]][input[3]] });
+					//this will create a bug ToDo
 
-				gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
-				gameState[input[0]][input[1]] = pieces::ES;
+					gameState[validCastleDirections[dir].kingEnd.row][validCastleDirections[dir].kingEnd.col] = gameState[input[0]][input[1]];
+					gameState[validCastleDirections[dir].rookEnd.row][validCastleDirections[dir].rookEnd.col] = gameState[input[2]][input[3]];
+					gameState[input[0]][input[1]] = pieces::ES;
+					gameState[input[2]][input[3]] = pieces::ES;
+				}
+				else
+				{
+					moveLog.push_back({ {input[0], input[1]}, {input[2], input[3]}, gameState[input[0]][input[1]], gameState[input[2]][input[3]] });
+
+					gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
+					gameState[input[0]][input[1]] = pieces::ES;
+				}
+
 				break;
 			}
 
@@ -141,7 +166,7 @@ bool validateMove(int input[])
 		//sucessfull castle
 		return false;
 	case -3: 
-		std::cout << "You cant castele here!" << std::endl;
+		std::cout << "You cant castle here!" << std::endl;
 		return false;
 	}
 
@@ -275,9 +300,10 @@ bool posUnderAttack(position endPos, position startPos, position pos ,bool check
 	return true;
 }
 
-bool casteling(position startPos, position endPos)
+bool castleMove(position startPos, position endPos)
 {
 	std::vector<position> piecesBetween;
+	int dir;
 
 	for (auto& i : moveLog)
 	{
@@ -295,11 +321,15 @@ bool casteling(position startPos, position endPos)
 			piecesBetween.push_back({ 7, 1 });
 			piecesBetween.push_back({ 7, 2 });
 			piecesBetween.push_back({ 7, 3 });
+
+			dir = 0;
 		}
 		else if (endPos.col = 7)
 		{
 			piecesBetween.push_back({ 7, 5 });
 			piecesBetween.push_back({ 7, 6 });
+
+			dir = 1;
 		}
 		else
 		{
@@ -313,11 +343,15 @@ bool casteling(position startPos, position endPos)
 			piecesBetween.push_back({ 0, 1 });
 			piecesBetween.push_back({ 0, 2 });
 			piecesBetween.push_back({ 0, 3 });
+
+			dir = 2;
 		}
 		else if (endPos.col = 7)
 		{
 			piecesBetween.push_back({ 0, 5 });
 			piecesBetween.push_back({ 0, 6 });
+
+			dir = 3;
 		}
 		else
 		{
@@ -341,6 +375,8 @@ bool casteling(position startPos, position endPos)
 		}
 	}
 
+	casManager = {true, dir};
+
 	return true;
 }
 
@@ -362,7 +398,7 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 		case pieces::WK:
 			if (gameState[endPos.row][endPos.col] == pieces::BR && endPos.row == 0)
 			{
-				if (casteling(startPos, endPos))
+				if (castleMove(startPos, endPos))
 				{
 					return { { -2, -2 } };
 				}
@@ -393,7 +429,7 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 		case pieces::BK:
 			if (gameState[endPos.row][endPos.col] == pieces::BR && endPos.row == 0)
 			{
-				if (casteling(startPos, endPos))
+				if (castleMove(startPos, endPos))
 				{
 					return { { -2, -2 } };
 				}

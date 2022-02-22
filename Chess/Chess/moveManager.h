@@ -12,13 +12,27 @@ struct move
 	int endPiece;
 };
 
+struct castling
+{
+	position kingStart;
+	position kingEnd;
+	position rookStart;
+	position rookEnd;
+};
+
+struct castleManager
+{
+	bool castleOnNextMove;
+	int dir;
+};
+
 void getUserInput();
 bool validateMove(int input[]);
 bool posUnderAttack(position endPos, position startPos, position pos, bool check);
 
 std::vector<position> getPossibleMoves(position startPos, position endPos, std::vector<position> possibleMoves);
 
-bool casteling(position startPos, position endPos);
+bool castleMove(position startPos, position endPos);
 void pawnPromotion(int input[]);
 std::vector<position> getPawnMoves(position startPos, std::vector<position> possibleMoves);
 std::vector<position> getRookMoves(position startPos, std::vector<position> possibleMoves, bool queenMode);
