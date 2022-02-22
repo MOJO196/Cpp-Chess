@@ -14,7 +14,7 @@ struct move
 
 void getUserInput();
 bool validateMove(int input[]);
-bool checkForCheck(position endPos, position startPos);
+bool posUnderAttack(position endPos, position startPos, position pos, bool check);
 
 std::vector<position> getPossibleMoves(position startPos, position endPos, std::vector<position> possibleMoves);
 

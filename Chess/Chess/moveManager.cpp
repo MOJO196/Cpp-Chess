@@ -133,8 +133,15 @@ bool validateMove(int input[])
 
 	possibleMoves = getPossibleMoves(startPos, endPos, possibleMoves);
 
-	if (possibleMoves[0].row == -1)
+	switch (possibleMoves[0].row)
 	{
+	case -1:
+		return false;
+	case -2:
+		//sucessfull castle
+		return false;
+	case -3: 
+		std::cout << "You cant castele here!" << std::endl;
 		return false;
 	}
 
@@ -174,19 +181,19 @@ bool validateMove(int input[])
 	}
 
 	//checks
-	moveValid = checkForCheck(endPos, startPos);
+	moveValid = posUnderAttack(endPos, startPos, {-1 , -1}, true);
 
 	return moveValid;
 }
 
-bool checkForCheck(position endPos, position startPos)
+bool posUnderAttack(position endPos, position startPos, position pos ,bool check)
 {
 	int movedPiece = gameState[startPos.row][startPos.col];
 	int replacedPiece = gameState[endPos.row][endPos.col];
 	int enemyPieces[6];
 
-	position kingPos;
 	position piecePos;
+	position posToCheck = pos;
 	std::vector<position> moves{};
 
 	gameState[endPos.row][endPos.col] = gameState[startPos.row][startPos.col];
@@ -195,12 +202,20 @@ bool checkForCheck(position endPos, position startPos)
 	if (whiteToMove)
 	{
 		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
-		kingPos = whiteKingPos;
+		
+		if (check)
+		{
+			posToCheck = whiteKingPos;
+		}
 	}
 	else
 	{
 		std::copy(std::begin(whitePieces), std::end(whitePieces), std::begin(enemyPieces));
-		kingPos = blackKingPos;
+
+		if (check)
+		{
+			posToCheck = blackKingPos;
+		}
 	}
 
 	whiteToMove = !whiteToMove;
@@ -225,7 +240,7 @@ bool checkForCheck(position endPos, position startPos)
 								throw std::runtime_error("This should never happen!");
 							}
 
-							if (moves[l].row == kingPos.row && moves[l].col == kingPos.col)
+							if (moves[l].row == posToCheck.row && moves[l].col == posToCheck.col)
 							{
 								char giveUp;
 
@@ -264,24 +279,67 @@ bool casteling(position startPos, position endPos)
 {
 	std::vector<position> piecesBetween;
 
+	for (auto& i : moveLog)
+	{
+		if (i.startPos.row == startPos.row && i.endPos.col == startPos.col &&
+			i.endPos.row == endPos.row && i.endPos.col == endPos.col)
+		{
+			return false;
+		}
+	}
 	//get positions in between
 	if (whiteToMove)
 	{
 		if (endPos.col = 0)
 		{
-
+			piecesBetween.push_back({ 7, 1 });
+			piecesBetween.push_back({ 7, 2 });
+			piecesBetween.push_back({ 7, 3 });
 		}
 		else if (endPos.col = 7)
 		{
-
+			piecesBetween.push_back({ 7, 5 });
+			piecesBetween.push_back({ 7, 6 });
+		}
+		else
+		{
+			return false;
 		}
 	}
 	else
 	{
-
+		if (endPos.col = 0)
+		{
+			piecesBetween.push_back({ 0, 1 });
+			piecesBetween.push_back({ 0, 2 });
+			piecesBetween.push_back({ 0, 3 });
+		}
+		else if (endPos.col = 7)
+		{
+			piecesBetween.push_back({ 0, 5 });
+			piecesBetween.push_back({ 0, 6 });
+		}
+		else
+		{
+			return false;
+		}
 	}
 
-	//for every position
+	for (position& i : piecesBetween)
+	{
+		if (gameState[i.row][i.col] != pieces::ES)
+		{
+			return false;
+		}
+	}
+
+	for (position& i : piecesBetween)
+	{
+		if (!posUnderAttack(endPos, startPos, i, false))
+		{
+			return false;
+		}
+	}
 
 	return true;
 }
@@ -304,8 +362,12 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 		case pieces::WK:
 			if (gameState[endPos.row][endPos.col] == pieces::BR && endPos.row == 0)
 			{
-				casteling(startPos, endPos);
-				return { { -2, -2 } };
+				if (casteling(startPos, endPos))
+				{
+					return { { -2, -2 } };
+				}
+				
+				return { { -3, -3} };
 			}
 
 			return getKingMoves(startPos, possibleMoves);
@@ -331,8 +393,12 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 		case pieces::BK:
 			if (gameState[endPos.row][endPos.col] == pieces::BR && endPos.row == 0)
 			{
-				casteling(startPos, endPos);
-				return { { -2, -2 } };
+				if (casteling(startPos, endPos))
+				{
+					return { { -2, -2 } };
+				}
+
+				return { { -3, -3} };
 			}
 
 			return getKingMoves(startPos, possibleMoves);
