@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <string>
 #include <exception>
 #include "moveManager.h"
 #include "common.h"
@@ -11,6 +12,8 @@ extern int moveCount;
 extern bool whiteToMove;
 extern bool gameIsRunning;
 extern enum pieces;
+
+const int betterRows[9] = {-1, 7, 6, 5, 4, 3, 2, 1, 0 };
 
 int blackPieces[6] = { pieces::BP, pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK };
 int whitePieces[6] = { pieces::WP, pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK };
@@ -32,9 +35,9 @@ position whiteKingPos = { 7, 4 };
 
 std::vector<move> moveLog{};
 
-castleManager casManager = {false, -1};
+castleManager casManager = { false, -1 };
 
-castling validCastleDirections[4] = 
+castling validCastleDirections[4] =
 {
 	{{0, 4}, {0, 2}, {0, 0}, {0, 3}},
 	{{0, 4}, {0, 6}, {0, 7}, {0, 5}},
@@ -44,6 +47,7 @@ castling validCastleDirections[4] =
 
 void getUserInput()
 {
+	int input[4];
 	char action;
 
 	for (;;)
@@ -53,28 +57,22 @@ void getUserInput()
 
 		if (action == 'm')
 		{
-			int input[4];
+			std::cout << "Enter your move for exaple (A1A3)!" << std::endl;
 
-			std::cout << "Enter your start row!" << std::endl;
-			std::cin >> input[0];
-			std::cout << "Enter your start column!" << std::endl;
-			std::cin >> input[1];
-			std::cout << "Enter your end row!" << std::endl;
-			std::cin >> input[2];
-			std::cout << "Enter your start column!" << std::endl;
-			std::cin >> input[3];
+			std::string stringIn;
+			std::cin >> stringIn;
 
-			//better input system
-			char betterInput[4];
+			const char* betterInput = stringIn.c_str();
 
-			for (int i = 0; i < betterInput.size(); i++)
+			if (stringIn.size() != 4)
 			{
-
+				break;
 			}
 
-
-
-
+			input[1] = betterInput[0] - 65;
+			input[3] = betterInput[2] - 65;
+			input[0] = betterRows[betterInput[1] - 48];
+			input[2] = betterRows[betterInput[3] - 48];
 
 			if (validateMove(input))
 			{
@@ -135,7 +133,7 @@ void getUserInput()
 
 					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].rookStart.col] = allyPieces[0];
 					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].kingStart.col] = allyPieces[1];
-					
+
 					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].rookEnd.col] = pieces::ES;
 					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].kingEnd.col] = pieces::ES;
 				}
@@ -168,6 +166,7 @@ void getUserInput()
 		pawnPromotion(input);
 	}
 
+	//update king location
 	if (gameState[input[0]][input[1]] == pieces::WK || gameState[input[0]][input[1]] == pieces::BK)
 	{
 		position newKingPos = { input[2], input[3] };
@@ -204,7 +203,7 @@ bool validateMove(int input[])
 	case -2:
 		//sucessfull castle
 		return true;
-	case -3: 
+	case -3:
 		std::cout << "You cant castle here!" << std::endl;
 		return false;
 	}
@@ -245,12 +244,12 @@ bool validateMove(int input[])
 	}
 
 	//checks
-	moveValid = posUnderAttack(endPos, startPos, {-1 , -1}, true);
+	moveValid = posUnderAttack(endPos, startPos, { -1 , -1 }, true);
 
 	return moveValid;
 }
 
-bool posUnderAttack(position endPos, position startPos, position pos ,bool check)
+bool posUnderAttack(position endPos, position startPos, position pos, bool check)
 {
 	int movedPiece = gameState[startPos.row][startPos.col];
 	int replacedPiece = gameState[endPos.row][endPos.col];
@@ -266,7 +265,7 @@ bool posUnderAttack(position endPos, position startPos, position pos ,bool check
 	if (whiteToMove)
 	{
 		std::copy(std::begin(blackPieces), std::end(blackPieces), std::begin(enemyPieces));
-		
+
 		if (check)
 		{
 			posToCheck = whiteKingPos;
@@ -415,7 +414,7 @@ bool castleMove(position startPos, position endPos)
 		}
 	}
 
-	casManager = {true, dir};
+	casManager = { true, dir };
 
 	return true;
 }
@@ -442,7 +441,7 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 				{
 					return { { -2, -2 } };
 				}
-				
+
 				return { { -3, -3} };
 			}
 

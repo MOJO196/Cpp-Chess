@@ -1,2 +1,2 @@
 int main();
-void printGameState();
+void testingArea();
