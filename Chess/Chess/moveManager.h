@@ -10,6 +10,7 @@ struct move
 	position endPos;
 	int startPiece;
 	int endPiece;
+	int castlingDir;
 };
 
 struct castling
@@ -23,7 +24,7 @@ struct castling
 struct castleManager
 {
 	bool castleOnNextMove;
-	int dir;
+	int castlingDir;
 };
 
 void getUserInput();

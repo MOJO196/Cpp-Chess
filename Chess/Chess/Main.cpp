@@ -2,7 +2,6 @@
 #include <array>
 #include <vector>
 #include "main.h"
-#include "common.h"
 #include "moveManager.h"
 #include "print.h"
 

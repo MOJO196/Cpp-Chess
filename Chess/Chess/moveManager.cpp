@@ -24,7 +24,7 @@ int gameState[8][8] =
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP},
-	{pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK, pieces::WB, pieces::WN, pieces::WR}
+	{pieces::WR, pieces::ES, pieces::ES, pieces::ES, pieces::WK, pieces::WB, pieces::WN, pieces::WR}
 };
 
 position blackKingPos = { 0, 4 };
@@ -44,7 +44,6 @@ castling validCastleDirections[4] =
 
 void getUserInput()
 {
-	int input[4];
 	char action;
 
 	for (;;)
@@ -54,6 +53,8 @@ void getUserInput()
 
 		if (action == 'm')
 		{
+			int input[4];
+
 			std::cout << "Enter your start row!" << std::endl;
 			std::cin >> input[0];
 			std::cout << "Enter your start column!" << std::endl;
@@ -63,25 +64,39 @@ void getUserInput()
 			std::cout << "Enter your start column!" << std::endl;
 			std::cin >> input[3];
 
+			//better input system
+			char betterInput[4];
+
+			for (int i = 0; i < betterInput.size(); i++)
+			{
+
+			}
+
+
+
+
+
 			if (validateMove(input))
 			{
-				if (casManager.castleOnNextMove)
+				if (!casManager.castleOnNextMove)
 				{
-					int dir = casManager.dir;
-					moveLog.push_back({ {input[0], input[1]}, {input[2], input[3]}, gameState[input[0]][input[1]], gameState[input[2]][input[3]] });
-					//this will create a bug ToDo
-
-					gameState[validCastleDirections[dir].kingEnd.row][validCastleDirections[dir].kingEnd.col] = gameState[input[0]][input[1]];
-					gameState[validCastleDirections[dir].rookEnd.row][validCastleDirections[dir].rookEnd.col] = gameState[input[2]][input[3]];
-					gameState[input[0]][input[1]] = pieces::ES;
-					gameState[input[2]][input[3]] = pieces::ES;
-				}
-				else
-				{
-					moveLog.push_back({ {input[0], input[1]}, {input[2], input[3]}, gameState[input[0]][input[1]], gameState[input[2]][input[3]] });
+					moveLog.push_back({ {input[0], input[1]}, {input[2], input[3]}, gameState[input[0]][input[1]], gameState[input[2]][input[3]], -1 });
 
 					gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
 					gameState[input[0]][input[1]] = pieces::ES;
+				}
+				else
+				{
+					const int& dir = casManager.castlingDir;
+					moveLog.push_back({ {input[0], input[1]}, {input[2], input[3]}, gameState[input[0]][input[1]], gameState[input[2]][input[3]], dir });
+
+					gameState[input[0]][validCastleDirections[dir].kingEnd.col] = gameState[input[0]][input[1]];
+					gameState[input[0]][validCastleDirections[dir].rookEnd.col] = gameState[input[2]][input[3]];
+
+					gameState[input[0]][input[1]] = pieces::ES;
+					gameState[input[2]][input[3]] = pieces::ES;
+
+					casManager.castleOnNextMove = false;
 				}
 
 				break;
@@ -98,8 +113,32 @@ void getUserInput()
 		{
 			if (moveCount > 0)
 			{
-				gameState[moveLog.back().startPos.row][moveLog.back().startPos.col] = moveLog.back().startPiece;
-				gameState[moveLog.back().endPos.row][moveLog.back().endPos.col] = moveLog.back().endPiece;
+				if (moveLog.back().castlingDir == -1)
+				{
+					gameState[moveLog.back().startPos.row][moveLog.back().startPos.col] = moveLog.back().startPiece;
+					gameState[moveLog.back().endPos.row][moveLog.back().endPos.col] = moveLog.back().endPiece;
+				}
+				else
+				{
+					int allyPieces[2];
+
+					if (!whiteToMove)	//the other player has to move
+					{
+						allyPieces[0] = pieces::WR;
+						allyPieces[1] = pieces::WK;
+					}
+					else
+					{
+						allyPieces[0] = pieces::BR;
+						allyPieces[1] = pieces::BK;
+					}
+
+					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].rookStart.col] = allyPieces[0];
+					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].kingStart.col] = allyPieces[1];
+					
+					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].rookEnd.col] = pieces::ES;
+					gameState[moveLog.back().startPos.row][validCastleDirections[moveLog.back().castlingDir].kingEnd.col] = pieces::ES;
+				}
 
 				moveLog.pop_back();
 				moveCount--;
@@ -164,7 +203,7 @@ bool validateMove(int input[])
 		return false;
 	case -2:
 		//sucessfull castle
-		return false;
+		return true;
 	case -3: 
 		std::cout << "You cant castle here!" << std::endl;
 		return false;
@@ -313,10 +352,11 @@ bool castleMove(position startPos, position endPos)
 			return false;
 		}
 	}
+
 	//get positions in between
 	if (whiteToMove)
 	{
-		if (endPos.col = 0)
+		if (endPos.col == 0)
 		{
 			piecesBetween.push_back({ 7, 1 });
 			piecesBetween.push_back({ 7, 2 });
@@ -324,7 +364,7 @@ bool castleMove(position startPos, position endPos)
 
 			dir = 0;
 		}
-		else if (endPos.col = 7)
+		else if (endPos.col == 7)
 		{
 			piecesBetween.push_back({ 7, 5 });
 			piecesBetween.push_back({ 7, 6 });
@@ -338,7 +378,7 @@ bool castleMove(position startPos, position endPos)
 	}
 	else
 	{
-		if (endPos.col = 0)
+		if (endPos.col == 0)
 		{
 			piecesBetween.push_back({ 0, 1 });
 			piecesBetween.push_back({ 0, 2 });
@@ -346,7 +386,7 @@ bool castleMove(position startPos, position endPos)
 
 			dir = 2;
 		}
-		else if (endPos.col = 7)
+		else if (endPos.col == 7)
 		{
 			piecesBetween.push_back({ 0, 5 });
 			piecesBetween.push_back({ 0, 6 });
@@ -396,7 +436,7 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 		case pieces::WQ:
 			return getQueenMoves(startPos, possibleMoves);
 		case pieces::WK:
-			if (gameState[endPos.row][endPos.col] == pieces::BR && endPos.row == 0)
+			if (gameState[endPos.row][endPos.col] == pieces::WR && endPos.row == 7)
 			{
 				if (castleMove(startPos, endPos))
 				{

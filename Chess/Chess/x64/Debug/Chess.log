@@ -1,5 +1,3 @@
-﻿  main.cpp
-  moveManager.cpp
+﻿  moveManager.cpp
 C:\Users\User\Documents\GitHub\Cpp-Chess\Chess\Chess\moveManager.cpp(13,19): warning C4091: "extern ": Ignoriert auf der linken Seite von "pieces", wenn keine Variable deklariert wurde
-  Code wird generiert...
   Chess.vcxproj -> C:\Users\User\Documents\GitHub\Cpp-Chess\Chess\x64\Debug\Chess.exe
