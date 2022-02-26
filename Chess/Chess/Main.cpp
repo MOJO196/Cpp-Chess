@@ -12,8 +12,6 @@ char restart;
 
 int main()
 {
-	testingArea();
-
 	gameIsRunning = true;
 	printGameState();
 
@@ -48,29 +46,5 @@ int main()
 	if (restart == 'y' || restart == 'Y')
 	{
 		gameIsRunning = false;
-	}
-}
-
-void testingArea()
-{
-	char betterInput[4] = { 'A', '1', 'C', '2' };
-	int print[4];
-	const int betterRows[9] = {-1, 7, 6, 5, 4, 3, 2, 1, 0 };
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (i % 2 == 0)
-		{
-			print[i] = betterInput[i] - 65;
-		}
-		else
-		{
-			print[i] = betterRows[betterInput[i] - 48];
-		}
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		std::cout << print[i] << std::endl;
 	}
 }
