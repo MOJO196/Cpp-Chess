@@ -15,6 +15,8 @@ extern enum pieces;
 
 const int betterRows[9] = {-1, 7, 6, 5, 4, 3, 2, 1, 0 };
 
+bool enPassant = false;
+
 int blackPieces[6] = { pieces::BP, pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK };
 int whitePieces[6] = { pieces::WP, pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK };
 
@@ -24,7 +26,7 @@ int gameState[8][8] =
 	{pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
-	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
+	{pieces::ES, pieces::ES, pieces::BP, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP},
 	{pieces::WR, pieces::ES, pieces::ES, pieces::ES, pieces::WK, pieces::WB, pieces::WN, pieces::WR}
@@ -82,6 +84,21 @@ void getUserInput()
 
 					gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
 					gameState[input[0]][input[1]] = pieces::ES;
+
+					//I have no idea what is happining here
+					if (enPassant)
+					{
+						if (whiteToMove)
+						{
+							gameState[input[2] - 1][input[3]] == pieces::ES;
+						}
+						else
+						{
+							gameState[input[2] + 1][input[3]] == pieces::ES;
+						}
+
+						enPassant = false;
+					}
 				}
 				else
 				{
@@ -153,7 +170,7 @@ void getUserInput()
 		}
 		else
 		{
-			std::cout << "\x1B[2J\x1B[H";
+			std::cout << "\x1B[2J\x1B[H"; //clear console
 			printGameState();
 
 			std::cout << std::endl << "Invalid actiion!" << std::endl;
@@ -421,7 +438,8 @@ bool castleMove(position startPos, position endPos)
 
 std::vector<position> getPossibleMoves(position startPos, position endPos, std::vector<position> possibleMoves)
 {
-	if (whiteToMove) {
+	if (whiteToMove) 
+	{
 		switch (gameState[startPos.row][startPos.col])
 		{
 		case pieces::WP:
@@ -505,6 +523,10 @@ void pawnPromotion(int input[])
 			gameState[input[2]][input[3]] = pieceID;
 			break;
 		}
+		else
+		{
+			std::cout << "Invalid piece ID!" << std::endl;
+		}
 	}
 }
 
@@ -548,6 +570,17 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 			if (gameState[startPos.row + direction][startPos.col + i] == enemyPieces[j])
 			{
 				possibleMoves.push_back({ startPos.row + direction, startPos.col + i });
+			}
+
+			//en passant
+			else if (moveLog.size() > 0)
+			{
+				if (moveLog.back().startPiece == enemyPieces[0] && startPos.row == moveLog.back().endPos.row && 
+					moveLog.back().endPos.col + i == startPos.col && abs(moveLog.back().startPos.row - moveLog.back().endPos.row) == 2)
+				{
+					possibleMoves.push_back({ startPos.row + direction, startPos.col - i });
+					enPassant = true;
+				}
 			}
 		}
 	}
