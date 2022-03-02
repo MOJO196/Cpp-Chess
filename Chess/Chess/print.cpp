@@ -33,6 +33,7 @@ void printGameState()
 				break;
 			}
 		}
+
 		std::cout << "\n";
 	}
 }

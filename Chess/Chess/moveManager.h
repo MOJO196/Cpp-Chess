@@ -41,3 +41,5 @@ std::vector<position> getKnightMoves(position startPos, std::vector<position> po
 std::vector<position> getBishopMoves(position startPos, std::vector<position> possibleMoves, bool queenMode);
 std::vector<position> getQueenMoves(position startPos, std::vector<position> possibleMoves);
 std::vector<position> getKingMoves(position startPos, std::vector<position> possibleMoves);
+
+int evaluateScore();

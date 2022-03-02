@@ -14,6 +14,7 @@ int main()
 {
 	gameIsRunning = true;
 	printGameState();
+	std::cout << "\n" << "Score : " << evaluateScore() << "\n"; //The board could be modified, so I wont be 0 everytime
 
 	for (;;) //game
 	{
@@ -26,6 +27,8 @@ int main()
 		moveCount++;
 		std::cout << "\x1B[2J\x1B[H";
 		printGameState();
+
+		std::cout << "\n" << "Score : " << evaluateScore() << "\n";
 	}
 
 	std::cout << "\x1B[2J\x1B[H";
@@ -33,14 +36,14 @@ int main()
 
 	if (whiteToMove)
 	{
-		std::cout << "Black won within " << moveCount << " moves!" << std::endl;
+		std::cout << "Black won within " << moveCount << " moves!\n";
 	}
 	else
 	{
-		std::cout << "White won within " << moveCount << " moves!" << std::endl;
+		std::cout << "White won within " << moveCount << " moves!\n";
 	}
 
-	std::cout << "Do you want to restart the game? [y/n]" << std::endl;
+	std::cout << "Do you want to restart the game? [y/n]\n";
 	std::cin >> restart;
 
 	if (restart == 'y' || restart == 'Y')

@@ -13,9 +13,12 @@ extern bool whiteToMove;
 extern bool gameIsRunning;
 extern enum pieces;
 
-const int betterRows[9] = {-1, 7, 6, 5, 4, 3, 2, 1, 0 };
+const int betterRows[9] = { -1, 7, 6, 5, 4, 3, 2, 1, 0 };
 
 bool enPassant = false;
+
+int score = 0;
+int scoreLookup[5] = { 1, 5, 3, 3, 9 };
 
 int blackPieces[6] = { pieces::BP, pieces::BR, pieces::BN, pieces::BB, pieces::BQ, pieces::BK };
 int whitePieces[6] = { pieces::WP, pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK };
@@ -26,10 +29,10 @@ int gameState[8][8] =
 	{pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP, pieces::BP},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
-	{pieces::ES, pieces::ES, pieces::BP, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
+	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES, pieces::ES},
 	{pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP, pieces::WP},
-	{pieces::WR, pieces::ES, pieces::ES, pieces::ES, pieces::WK, pieces::WB, pieces::WN, pieces::WR}
+	{pieces::WR, pieces::WN, pieces::WB, pieces::WQ, pieces::WK, pieces::WB, pieces::WN, pieces::WR}
 };
 
 position blackKingPos = { 0, 4 };
@@ -54,12 +57,12 @@ void getUserInput()
 
 	for (;;)
 	{
-		std::cout << std::endl << "Enter what you want to do undo[u], move[m]" << std::endl;
+		std::cout << "\nEnter what you want to do undo[u], move[m]\n";
 		std::cin >> action;
 
 		if (action == 'm')
 		{
-			std::cout << "Enter your move for exaple (A1A3)!" << std::endl;
+			std::cout << "Enter your move for exaple (A1A3)!\n";
 
 			std::string stringIn;
 			std::cin >> stringIn;
@@ -85,16 +88,15 @@ void getUserInput()
 					gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
 					gameState[input[0]][input[1]] = pieces::ES;
 
-					//I have no idea what is happining here
 					if (enPassant)
 					{
 						if (whiteToMove)
 						{
-							gameState[input[2] - 1][input[3]] == pieces::ES;
+							gameState[input[2] + 1][input[3]] = pieces::ES;
 						}
 						else
 						{
-							gameState[input[2] + 1][input[3]] == pieces::ES;
+							gameState[input[2] - 1][input[3]] = pieces::ES;
 						}
 
 						enPassant = false;
@@ -122,7 +124,7 @@ void getUserInput()
 			std::cout << "\x1B[2J\x1B[H";
 			printGameState();
 
-			std::cout << std::endl << "Invalid move!" << std::endl;
+			std::cout << "\nInvalid move!\n";
 		}
 		else if (action == 'u')
 		{
@@ -165,7 +167,7 @@ void getUserInput()
 			}
 			else
 			{
-				std::cout << "You can not undo your the first move!" << std::endl;
+				std::cout << "You can not undo your the first move!\n";
 			}
 		}
 		else
@@ -173,7 +175,7 @@ void getUserInput()
 			std::cout << "\x1B[2J\x1B[H"; //clear console
 			printGameState();
 
-			std::cout << std::endl << "Invalid actiion!" << std::endl;
+			std::cout << "\nInvalid actiion!\n";
 		}
 	}
 
@@ -199,6 +201,33 @@ void getUserInput()
 	}
 }
 
+int evaluateScore()
+{
+	score = 0;
+
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			for (int k = 0; k < 5; k++)
+			{
+				if (gameState[i][j] == whitePieces[k])
+				{
+					score += scoreLookup[k];
+					break;
+				}
+				else if (gameState[i][j] == blackPieces[k])
+				{
+					score -= scoreLookup[k];
+					break;
+				}
+			}
+		}
+	}
+
+	return score;
+}
+
 bool validateMove(int input[])
 {
 	for (size_t i = 0; i < 4; i++) if (input[i] > 9 && input[i] < 0)
@@ -221,7 +250,7 @@ bool validateMove(int input[])
 		//sucessfull castle
 		return true;
 	case -3:
-		std::cout << "You cant castle here!" << std::endl;
+		std::cout << "You cant castle here!\n";
 		return false;
 	}
 
@@ -240,7 +269,7 @@ bool validateMove(int input[])
 			if (moves[i][j] == 0) std::cout << "-- ";
 			else std::cout << "XX ";
 		}
-		std::cout << std::endl;
+		std::cout << "\n";
 	}
 
 	//validate
@@ -329,8 +358,8 @@ bool posUnderAttack(position endPos, position startPos, position pos, bool check
 
 								whiteToMove = !whiteToMove;
 
-								std::cout << "Your king is in danger!" << std::endl;
-								std::cout << "Do you want to give up? [y/n]" << std::endl;
+								std::cout << "Your king is in danger!\n";
+								std::cout << "Do you want to give up? [y/n]\n";
 								std::cin >> giveUp;
 
 								if (giveUp == 'y' || giveUp == 'Y')
@@ -438,7 +467,7 @@ bool castleMove(position startPos, position endPos)
 
 std::vector<position> getPossibleMoves(position startPos, position endPos, std::vector<position> possibleMoves)
 {
-	if (whiteToMove) 
+	if (whiteToMove)
 	{
 		switch (gameState[startPos.row][startPos.col])
 		{
@@ -465,7 +494,7 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 
 			return getKingMoves(startPos, possibleMoves);
 		default:
-			std::cout << "This is an enemy piece, please select a piece of yours!" << std::endl;
+			std::cout << "This is an enemy piece, please select a piece of yours!\n";
 			return possibleMoves = { { -1, -1 } };
 		}
 	}
@@ -496,7 +525,7 @@ std::vector<position> getPossibleMoves(position startPos, position endPos, std::
 
 			return getKingMoves(startPos, possibleMoves);
 		default:
-			std::cout << "This is an enemy piece, please select a piece of yours!" << std::endl;
+			std::cout << "This is an enemy piece, please select a piece of yours!\n";
 			return possibleMoves = { { -1, -1 } };
 		}
 	}
@@ -510,7 +539,7 @@ void pawnPromotion(int input[])
 	{
 		int pieceID = -1;
 
-		std::cout << "Enter the ID of a piece you want to promote!" << std::endl;
+		std::cout << "Enter the ID of a piece you want to promote!\n";
 		std::cin >> pieceID;
 
 		if (whiteToMove && pieceID == pieces::WN || pieceID == pieces::WB || pieceID == pieces::WR || pieceID == pieces::WQ)
@@ -525,7 +554,7 @@ void pawnPromotion(int input[])
 		}
 		else
 		{
-			std::cout << "Invalid piece ID!" << std::endl;
+			std::cout << "Invalid piece ID!\n";
 		}
 	}
 }
@@ -575,7 +604,7 @@ std::vector<position> getPawnMoves(position startPos, std::vector<position> poss
 			//en passant
 			else if (moveLog.size() > 0)
 			{
-				if (moveLog.back().startPiece == enemyPieces[0] && startPos.row == moveLog.back().endPos.row && 
+				if (moveLog.back().startPiece == enemyPieces[0] && startPos.row == moveLog.back().endPos.row &&
 					moveLog.back().endPos.col + i == startPos.col && abs(moveLog.back().startPos.row - moveLog.back().endPos.row) == 2)
 				{
 					possibleMoves.push_back({ startPos.row + direction, startPos.col - i });

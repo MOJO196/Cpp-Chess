@@ -1,5 +1,3 @@
 ﻿  moveManager.cpp
 C:\Users\User\Documents\GitHub\Cpp-Chess\Chess\Chess\moveManager.cpp(14,19): warning C4091: "extern ": Ignoriert auf der linken Seite von "pieces", wenn keine Variable deklariert wurde
-C:\Users\User\Documents\GitHub\Cpp-Chess\Chess\Chess\moveManager.cpp(92,42): warning C4553: "==": Ergebnis des Ausdrucks nicht verwendet. War "=" gemeint?
-C:\Users\User\Documents\GitHub\Cpp-Chess\Chess\Chess\moveManager.cpp(96,42): warning C4553: "==": Ergebnis des Ausdrucks nicht verwendet. War "=" gemeint?
   Chess.vcxproj -> C:\Users\User\Documents\GitHub\Cpp-Chess\Chess\x64\Debug\Chess.exe
