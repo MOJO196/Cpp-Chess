@@ -71,7 +71,8 @@ void getUserInput()
 
 			if (stringIn.size() != 4)
 			{
-				break;
+				std::cout << "Your input is to long!\n";
+				continue;
 			}
 
 			input[1] = betterInput[0] - 65;
@@ -88,6 +89,8 @@ void getUserInput()
 					gameState[input[2]][input[3]] = gameState[input[0]][input[1]];
 					gameState[input[0]][input[1]] = pieces::ES;
 
+
+					//enPassant
 					if (enPassant)
 					{
 						if (whiteToMove)
@@ -99,6 +102,7 @@ void getUserInput()
 							gameState[input[2] - 1][input[3]] = pieces::ES;
 						}
 
+						moveLog.back().castlingDir = -2;
 						enPassant = false;
 					}
 				}
@@ -134,6 +138,10 @@ void getUserInput()
 				{
 					gameState[moveLog.back().startPos.row][moveLog.back().startPos.col] = moveLog.back().startPiece;
 					gameState[moveLog.back().endPos.row][moveLog.back().endPos.col] = moveLog.back().endPiece;
+				}
+				else if (moveLog.back().castlingDir == -2)
+				{
+					if ();
 				}
 				else
 				{
@@ -179,6 +187,7 @@ void getUserInput()
 		}
 	}
 
+	if (input != NULL)
 	//pawn Promotion
 	if (gameState[input[0]][input[1]] == pieces::BP || gameState[input[0]][input[1]] == pieces::WP && (input[2] == 0 || input[2] == 7))
 	{
