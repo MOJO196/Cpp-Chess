@@ -141,7 +141,17 @@ void getUserInput()
 				}
 				else if (moveLog.back().castlingDir == -2)
 				{
-					if ();
+					gameState[moveLog.back().startPos.row][moveLog.back().startPos.col] = moveLog.back().startPiece;
+					gameState[moveLog.back().endPos.row][moveLog.back().endPos.col] = moveLog.back().endPiece;
+
+					if (!whiteToMove)
+					{
+						gameState[moveLog.back().endPos.row + 1][moveLog.back().endPos.col] = pieces::BP;
+					}
+					else
+					{
+						gameState[moveLog.back().endPos.row - 1][moveLog.back().endPos.col] = pieces::WP;
+					}
 				}
 				else
 				{
