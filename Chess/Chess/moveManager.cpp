@@ -422,16 +422,20 @@ bool castleMove(position startPos, position endPos)
 	{
 		if (endPos.col == 0)
 		{
+			piecesBetween.push_back({ 7, 0 });
 			piecesBetween.push_back({ 7, 1 });
 			piecesBetween.push_back({ 7, 2 });
 			piecesBetween.push_back({ 7, 3 });
+			piecesBetween.push_back({ 7, 4 });
 
 			dir = 0;
 		}
 		else if (endPos.col == 7)
 		{
+			piecesBetween.push_back({ 7, 4 });
 			piecesBetween.push_back({ 7, 5 });
 			piecesBetween.push_back({ 7, 6 });
+			piecesBetween.push_back({ 7, 7 });
 
 			dir = 1;
 		}
@@ -444,16 +448,20 @@ bool castleMove(position startPos, position endPos)
 	{
 		if (endPos.col == 0)
 		{
+			piecesBetween.push_back({ 0, 0 });
 			piecesBetween.push_back({ 0, 1 });
 			piecesBetween.push_back({ 0, 2 });
 			piecesBetween.push_back({ 0, 3 });
+			piecesBetween.push_back({ 0, 4 });
 
 			dir = 2;
 		}
 		else if (endPos.col == 7)
 		{
+			piecesBetween.push_back({ 0, 4 });
 			piecesBetween.push_back({ 0, 5 });
 			piecesBetween.push_back({ 0, 6 });
+			piecesBetween.push_back({ 0, 7 });
 
 			dir = 3;
 		}
