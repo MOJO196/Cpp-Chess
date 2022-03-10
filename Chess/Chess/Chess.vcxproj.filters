@@ -26,9 +26,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="moveManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

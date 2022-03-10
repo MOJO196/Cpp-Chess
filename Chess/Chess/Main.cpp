@@ -1,7 +1,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
-#include "main.h"
+
 #include "moveManager.h"
 #include "print.h"
 
@@ -12,6 +12,9 @@ char restart;
 
 int main()
 {
+	std::cout << "When you see this there will be a bug, which prevents the program from clearing the console.\n" << "It will ocure while if you are using the .exe version! It looks something like this: ";
+	std::cout << "\x1B[2J\x1B[H";
+
 	gameIsRunning = true;
 	printGameState();
 	std::cout << "\n" << "Score : " << evaluateScore() << "\n"; //The board could be modified, so I wont be 0 everytime

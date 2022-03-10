@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <exception>
+
 #include "moveManager.h"
 #include "common.h"
 #include "print.h"
@@ -11,7 +12,6 @@ extern int gameState[8][8];
 extern int moveCount;
 extern bool whiteToMove;
 extern bool gameIsRunning;
-extern enum pieces;
 
 const int betterRows[9] = { -1, 7, 6, 5, 4, 3, 2, 1, 0 };
 
@@ -52,7 +52,7 @@ castling validCastleDirections[4] =
 
 void getUserInput()
 {
-	int input[4];
+	int input[4] = {};
 	char action;
 
 	for (;;)
@@ -62,7 +62,7 @@ void getUserInput()
 
 		if (action == 'm')
 		{
-			std::cout << "Enter your move for exaple (A1A3)!\n";
+			std::cout << "Enter your move for exaple (A2A4)!\n";
 
 			std::string stringIn;
 			std::cin >> stringIn;
@@ -155,7 +155,7 @@ void getUserInput()
 				}
 				else
 				{
-					int allyPieces[2];
+					int allyPieces[2] = {};
 
 					if (!whiteToMove)	//the other player has to move
 					{
@@ -261,19 +261,21 @@ bool validateMove(int input[])
 
 	possibleMoves = getPossibleMoves(startPos, endPos, possibleMoves);
 
-	switch (possibleMoves[0].row)
+	if (possibleMoves.size() < 0)
 	{
-	case -1:
-		return false;
-	case -2:
-		//sucessfull castle
-		return true;
-	case -3:
-		std::cout << "You cant castle here!\n";
-		return false;
+		switch (possibleMoves[0].row)
+		{
+		case -1:
+			return false;
+		case -2:
+			return true;
+		case -3:
+			std::cout << "You cant castle here!\n";
+			return false;
+		}
 	}
 
-	//visualizeMoves
+	//visualize moves
 	int moves[8][8] = { 0 };
 
 	for (int i = 0; i < possibleMoves.size(); i++)

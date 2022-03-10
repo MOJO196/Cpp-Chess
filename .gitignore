@@ -10,7 +10,6 @@
 # Precompiled Headers
 *.gch
 *.pch
-
 .vs/
 
 # Compiled Dynamic libraries
@@ -29,10 +28,6 @@
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
-Chess/.vs/Chess/v17/ipch/AutoPCH/95651307f4d2f4f7/MOVEMANAGER.ipch
-Chess/.vs/Chess/v17/.suo
-Chess/.vs/Chess/v17/Browse.VC.db
 *.ipch

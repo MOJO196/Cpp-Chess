@@ -1,3 +1,5 @@
+#pragma once
+
 struct position
 {
 	int row;
@@ -33,9 +35,10 @@ bool posUnderAttack(position endPos, position startPos, position pos, bool check
 
 std::vector<position> getPossibleMoves(position startPos, position endPos, std::vector<position> possibleMoves);
 
+//piece moves
+std::vector<position> getPawnMoves(position startPos, std::vector<position> possibleMoves);
 bool castleMove(position startPos, position endPos);
 void pawnPromotion(int input[]);
-std::vector<position> getPawnMoves(position startPos, std::vector<position> possibleMoves);
 std::vector<position> getRookMoves(position startPos, std::vector<position> possibleMoves, bool queenMode);
 std::vector<position> getKnightMoves(position startPos, std::vector<position> possibleMoves);
 std::vector<position> getBishopMoves(position startPos, std::vector<position> possibleMoves, bool queenMode);

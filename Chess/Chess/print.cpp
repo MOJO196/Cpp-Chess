@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "common.h"
 
 const char* pieceNames[] = { "ES", "BP", "BR", "BN", "BB", "BQ", "BK", "WP", "WR", "WN", "WB", "WQ", "WK" };
