@@ -125,7 +125,8 @@ void getUserInput()
 
 			if (!gameIsRunning) break;
 
-			std::cout << "\x1B[2J\x1B[H";
+
+
 			printGameState();
 
 			std::cout << "\nInvalid move!\n";
@@ -180,7 +181,7 @@ void getUserInput()
 
 				whiteToMove = !whiteToMove;
 
-				std::cout << "\x1B[2J\x1B[H";
+				clear();
 				printGameState();
 			}
 			else
@@ -190,7 +191,7 @@ void getUserInput()
 		}
 		else
 		{
-			std::cout << "\x1B[2J\x1B[H"; //clear console
+			clear(); //clear console
 			printGameState();
 
 			std::cout << "\nInvalid actiion!\n";
@@ -198,11 +199,11 @@ void getUserInput()
 	}
 
 	if (input != NULL)
-	//pawn Promotion
-	if (gameState[input[0]][input[1]] == pieces::BP || gameState[input[0]][input[1]] == pieces::WP && (input[2] == 0 || input[2] == 7))
-	{
-		pawnPromotion(input);
-	}
+		//pawn Promotion
+		if (gameState[input[0]][input[1]] == pieces::BP || gameState[input[0]][input[1]] == pieces::WP && (input[2] == 0 || input[2] == 7))
+		{
+			pawnPromotion(input);
+		}
 
 	//update king location
 	if (gameState[input[0]][input[1]] == pieces::WK || gameState[input[0]][input[1]] == pieces::BK)
